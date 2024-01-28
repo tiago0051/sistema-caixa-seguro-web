@@ -1,6 +1,6 @@
-#Sistema caixa seguro
+# Sistema caixa seguro
 
-##Domínios
+## Domínios
 
 - Manutenção vendas
 - - Gestão de pré-vendas
@@ -9,7 +9,7 @@
 - Manutenção do estoque
 - Manutenção de clientes
 
-##Requisitos funcionais
+## Requisitos funcionais
 
 - Limitações de permissão por usuário autenticado
 - Manutenção vendas
