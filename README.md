@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+#Sistema caixa seguro
 
-## Getting Started
+##Domínios
 
-First, run the development server:
+- Manutenção vendas
+- - Gestão de pré-vendas
+- - Gestão de métodos de pagamento
+- Manutenção de caixa
+- Manutenção do estoque
+- Manutenção de clientes
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+##Requisitos funcionais
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Limitações de permissão por usuário autenticado
+- Manutenção vendas
+- - Conseguir fazer vendas apontando como vendedor um usuário não autenticado
+- - Ao vender, fazer a remoção do produto vendido na quantidade que foi retirada do estoque.
+- - Selecionar um cliente e gravar o histórico da venda para o cliente.
+- - Buscar produtos pelo código ou código de barras
+- - Buscar produtos pelo nome, fabricante, categoria.
+- - Buscar produtos por características.
+- - Listar produtos e suas características e seus devidos estoques.
+- - Poder selecionar as características do produto a ser vendido.
+- - Poder calcular o desconto por porcentagem ou valor.
+- - Poder salvar a venda como pré-venda em vez de finalizar.
+- - Poder acessar pré-vendas e visualizar a lista
+- - Poder associar uma pré-venda a um cliente
+- - Organizar pré-vendas por código e data de criação.
+- - Poder buscar pré-venda por código e data de criação.
+- - Poder imprimir uma pré-venda com o código da mesma.
+- - Ao apresentar o produto na busca, caso exista uma pré-venda para o produto e for o ultimo no estoque, apresentar uma notificação.
+- - Poder selecionar mais de um método de pagamento na finalização da venda.
+- - Poder parcelar a venda para um cliente pré-liberado caso o mesmo tenha limite.
+- - Ao finalizar a venda, imprimir um resumo da mesma com o código da venda e os métodos de pagamento.
+- Manutenção do estoque
+- - Poder cadastrar características da categoria e indicar no produto.
+- - Poder adicionar quantidade no estoque de um produto já existente.
+- - Conseguir identificar quais produtos possuem pré-vendas.
