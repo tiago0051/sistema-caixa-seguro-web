@@ -36,13 +36,17 @@ export function DashboardHeader() {
             </Link>
             <Link
               href="/dashboard/products"
-              className="hover:underline text-secondary-foreground"
+              className={`hover:underline text-secondary-foreground ${
+                selectedPage === "products" && "underline"
+              }`}
             >
               <NavigationMenuItem>Produtos</NavigationMenuItem>
             </Link>
             <Link
               href="/dashboard/customers"
-              className="hover:underline text-secondary-foreground"
+              className={`hover:underline text-secondary-foreground ${
+                selectedPage === "customers" && "underline"
+              }`}
             >
               <NavigationMenuItem>Clientes</NavigationMenuItem>
             </Link>

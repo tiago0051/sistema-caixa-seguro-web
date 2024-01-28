@@ -13,9 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 
-export default function Counter() {
+export default function CounterPage() {
   return (
     <div className="grid gap-8">
       <div className="flex justify-between">

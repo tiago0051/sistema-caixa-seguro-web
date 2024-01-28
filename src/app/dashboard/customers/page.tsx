@@ -12,33 +12,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default function ProductsPage() {
+export default function CustomersPage() {
   return (
     <div className="grid gap-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Produtos</h1>
+        <h1 className="text-3xl font-bold">Clientes</h1>
         <div>
-          <Button>Adicionar produto</Button>
+          <Button>Adicionar cliente</Button>
         </div>
       </div>
       <div className="grid grid-cols-[350px_auto]">
         <div className="border-r border-separate mr-4 grid gap-6 pr-4">
-          <h3 className="font-semibold">Pesquise pelo produto</h3>
+          <h3 className="font-semibold">Pesquise pelo cliente</h3>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label>Código</Label>
               <Input />
             </div>
             <div className="grid gap-2">
-              <Label>Código de barras</Label>
+              <Label>Nome</Label>
               <Input />
             </div>
             <div className="grid gap-2">
-              <Label>Nome do produto</Label>
-              <Input />
-            </div>
-            <div className="grid gap-2">
-              <Label>Nome do fabricante</Label>
+              <Label>CPF</Label>
               <Input />
             </div>
             <Button>Filtrar</Button>
@@ -46,7 +42,7 @@ export default function ProductsPage() {
         </div>
         <div>
           <Table>
-            <TableCaption>Lista de produtos.</TableCaption>
+            <TableCaption>Lista de clientes.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[50px]">
@@ -54,9 +50,7 @@ export default function ProductsPage() {
                 </TableHead>
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
-                <TableHead>Quantidade</TableHead>
-                <TableHead className="text-right">Valor unitário</TableHead>
-                <TableHead className="text-right">Valor total</TableHead>
+                <TableHead>CPF</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -65,20 +59,16 @@ export default function ProductsPage() {
                   <Checkbox />
                 </TableCell>
                 <TableCell className="font-medium">2FG3D</TableCell>
-                <TableCell>Roupeiro Espanha 2P</TableCell>
-                <TableCell>2</TableCell>
-                <TableCell className="text-right">$250.00</TableCell>
-                <TableCell className="text-right">$500.00</TableCell>
+                <TableCell>Jorge Luiz</TableCell>
+                <TableCell>655.526.500-00</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">
                   <Checkbox />
                 </TableCell>
                 <TableCell className="font-medium">2FG3D</TableCell>
-                <TableCell>Roupeiro Madri C/Espelho</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell className="text-right">$250.00</TableCell>
-                <TableCell className="text-right">$250.00</TableCell>
+                <TableCell>Jorge Luiz</TableCell>
+                <TableCell>655.526.500-00</TableCell>
               </TableRow>
             </TableBody>
           </Table>
