@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { ComboboxCustomers } from "@/components/ui/combobox-customers";
 import { ComboboxSellers } from "@/components/ui/combobox-sellers";
@@ -13,14 +15,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ProductsSearch } from "./components/productsSearch";
+import { useState } from "react";
+import { PreSalesList } from "./components/preSalesList";
+import { FinalizeSale } from "./components/finalizeSale";
 
 export default function CounterPage() {
+  const [isOpenProductsSearch, setIsOpenProductsSearch] = useState(false);
+  const [isOpenPreSalesList, setIsOpenPreSalesList] = useState(false);
+  const [isOpenFinalizeSale, setIsOpenFinalizeSale] = useState(false);
+
   return (
     <div className="grid gap-8">
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold">Caixa</h1>
         <div className="flex gap-4 items-center">
-          <Button variant="ghost">Listar pré-vendas</Button>
+          <Button variant="ghost" onClick={() => setIsOpenPreSalesList(true)}>
+            Listar pré-vendas
+          </Button>
           <Button>Salvar pré-venda</Button>
         </div>
       </div>
@@ -28,7 +40,9 @@ export default function CounterPage() {
         <div>
           <div className="flex gap-2 mb-4">
             <Input placeholder="Digite o código de barras do produto" />
-            <Button>Buscar produto</Button>
+            <Button onClick={() => setIsOpenProductsSearch(true)}>
+              Buscar produto
+            </Button>
           </div>
           <Table>
             <TableCaption>Lista de produtos adicionados.</TableCaption>
@@ -111,11 +125,28 @@ export default function CounterPage() {
                   <span className="text-xs">R$ </span>750.00
                 </h3>
               </div>
-              <Button>Finalizar venda</Button>
+              <Button onClick={() => setIsOpenFinalizeSale(true)}>
+                Finalizar venda
+              </Button>
             </div>
           </div>
         </div>
       </div>
+
+      <ProductsSearch
+        isOpen={isOpenProductsSearch}
+        onClose={() => setIsOpenProductsSearch(false)}
+      />
+
+      <PreSalesList
+        isOpen={isOpenPreSalesList}
+        onClose={() => setIsOpenPreSalesList(false)}
+      />
+
+      <FinalizeSale
+        isOpen={isOpenFinalizeSale}
+        onClose={() => setIsOpenFinalizeSale(false)}
+      />
     </div>
   );
 }

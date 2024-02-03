@@ -50,6 +50,14 @@ export function DashboardHeader() {
             >
               <NavigationMenuItem>Clientes</NavigationMenuItem>
             </Link>
+            <Link
+              href="/dashboard/configuration"
+              className={`hover:underline text-secondary-foreground ${
+                selectedPage === "configuration" && "underline"
+              }`}
+            >
+              <NavigationMenuItem>Configuração</NavigationMenuItem>
+            </Link>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
