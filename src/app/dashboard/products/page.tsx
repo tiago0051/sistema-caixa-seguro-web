@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 
 export default function ProductsPage() {
   return (
@@ -18,7 +19,9 @@ export default function ProductsPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Produtos</h1>
         <div>
-          <Button>Adicionar produto</Button>
+          <Link href="/dashboard/products/0">
+            <Button>Adicionar produto</Button>
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-[350px_auto]">
