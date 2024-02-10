@@ -27,24 +27,24 @@ export default function CounterPage() {
 
   return (
     <div className="grid gap-8">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold">Caixa</h1>
-        <div className="flex gap-4 items-center">
+      <div className="md:flex-row justify-between flex flex-col gap-6">
+        <h1 className="text-3xl font-bold text-center md:text-left">Caixa</h1>
+        <div className="grid md:flex gap-4 items-center">
           <Button variant="ghost" onClick={() => setIsOpenPreSalesList(true)}>
             Listar pré-vendas
           </Button>
           <Button>Salvar pré-venda</Button>
         </div>
       </div>
-      <div className="grid grid-cols-[auto_280px] gap-4">
-        <div>
-          <div className="flex gap-2 mb-4">
+      <div className="grid md:grid-cols-[auto_280px] gap-8 md:gap-4">
+        <div className="grid">
+          <div className="flex md:flex-row flex-col gap-2 mb-4">
             <Input placeholder="Digite o código de barras do produto" />
             <Button onClick={() => setIsOpenProductsSearch(true)}>
               Buscar produto
             </Button>
           </div>
-          <Table>
+          <Table className="whitespace-nowrap">
             <TableCaption>Lista de produtos adicionados.</TableCaption>
             <TableHeader>
               <TableRow>
@@ -87,7 +87,7 @@ export default function CounterPage() {
             </TableBody>
           </Table>
         </div>
-        <div className="border-l border-separate pl-4">
+        <div className="md:border-l border-separate pl-4">
           <div className="grid gap-6 w-[200px] mx-auto">
             <h3 className="font-semibold">Informações da venda</h3>
             <div className="grid gap-4">

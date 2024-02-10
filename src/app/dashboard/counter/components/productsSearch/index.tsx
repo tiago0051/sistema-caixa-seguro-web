@@ -51,7 +51,7 @@ export function ProductsSearch({ isOpen, onClose }: ProductsSearchProps) {
             </div>
             <Button className="self-end">Filtrar</Button>
           </div>
-          <Table>
+          <Table className="whitespace-nowrap">
             <TableCaption>Lista de produtos</TableCaption>
             <TableHeader>
               <TableRow>

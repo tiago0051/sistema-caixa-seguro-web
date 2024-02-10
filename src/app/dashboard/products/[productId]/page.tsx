@@ -14,11 +14,14 @@ import { Input } from "@/components/ui/input";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CurrencyInput } from "@/components/ui/currency-input";
 
 const ProductsSchema = z.object({
   name: z.string(),
   manufacturer: z.string(),
   category: z.string(),
+  costValue: z.number(),
+  saleValue: z.number(),
   amount: z.number(),
 });
 
@@ -50,20 +53,17 @@ export default function RegisterProductPage({
       <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-4 gap-4"
+          className="grid grid-cols-6 gap-4 max-w-2xl"
         >
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-4">
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
                   <Input placeholder="Nome do produto" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Nome que ficara visível em todo o sistema
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -72,14 +72,11 @@ export default function RegisterProductPage({
             control={form.control}
             name="manufacturer"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2">
                 <FormLabel>Fabricante</FormLabel>
                 <FormControl>
                   <Input placeholder="Nome fabricante do produto" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Empresa que fabricou o produto
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -88,7 +85,7 @@ export default function RegisterProductPage({
             control={form.control}
             name="category"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-3">
                 <FormLabel>Categoria</FormLabel>
                 <FormControl>
                   <ComboboxCategories
@@ -96,9 +93,32 @@ export default function RegisterProductPage({
                     setValue={(value) => (field.value = value)}
                   />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="costValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Valor custo</FormLabel>
+                <FormControl>
+                  <CurrencyInput {...field} placeholder="0,00" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="saleValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Valor venda</FormLabel>
+                <FormControl>
+                  <CurrencyInput {...field} placeholder="0,00" />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -110,11 +130,8 @@ export default function RegisterProductPage({
               <FormItem>
                 <FormLabel>Quantidade</FormLabel>
                 <FormControl>
-                  <Input placeholder="Quantidade do produto" {...field} />
+                  <Input placeholder="0" {...field} />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

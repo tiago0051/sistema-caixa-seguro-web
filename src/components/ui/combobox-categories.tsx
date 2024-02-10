@@ -59,17 +59,17 @@ export function ComboboxCategories({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-full justify-between"
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : "Selecionar cliente..."}
+            : "Selecionar a categoria..."}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[214px] p-0">
         <Command>
-          <CommandInput placeholder="Buscar cliente..." className="h-9" />
+          <CommandInput placeholder="Buscar a categoria..." className="h-9" />
           <CommandEmpty>No framework found.</CommandEmpty>
           <CommandGroup>
             {frameworks.map((framework) => (

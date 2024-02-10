@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
@@ -22,6 +23,14 @@ export default function SignIn() {
         <Link href="/suporte">Suporte</Link>
       </div>
       <div className="items-center justify-center gap-8 grid">
+        <div className="mx-auto bg-secondary/50 w-24 h-24 rounded-full flex justify-center items-center shadow-md shadow-black/10">
+          <Image
+            src="/images/logo.svg"
+            alt="Logo Sistema caixa seguro"
+            width={60}
+            height={60}
+          />
+        </div>
         <div>
           <h2 className="text-center text-xl">Seja bem-vindo</h2>
           <p className="text-base text-center">

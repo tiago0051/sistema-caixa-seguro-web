@@ -14,6 +14,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,8 +24,14 @@ export function DashboardHeader() {
 
   return (
     <div className="py-3 px-6 bg-secondary flex justify-between items-center shadow-sm">
-      <div>
-        <NavigationMenu>
+      <div className="flex gap-8">
+        <Image
+          src="/images/logo.svg"
+          alt="Logo Sistema caixa seguro"
+          width={40}
+          height={40}
+        />
+        <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-8">
             <Link
               href="/dashboard/counter"
@@ -61,7 +68,7 @@ export function DashboardHeader() {
           </NavigationMenuList>
         </NavigationMenu>
       </div>
-      <div className="flex items-center gap-8">
+      <div className="hidden md:flex items-center gap-8">
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
