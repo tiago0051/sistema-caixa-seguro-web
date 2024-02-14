@@ -23,7 +23,7 @@ export default function SignIn() {
         <Link href="/suporte">Suporte</Link>
       </div>
       <div className="items-center justify-center gap-8 grid">
-        <div className="mx-auto bg-secondary/50 w-24 h-24 rounded-full flex justify-center items-center shadow-md shadow-black/10">
+        <div className="mx-auto bg-secondary/80 w-24 h-24 rounded-full flex justify-center items-center shadow-md shadow-black/10">
           <Image
             src="/images/logo.svg"
             alt="Logo Sistema caixa seguro"

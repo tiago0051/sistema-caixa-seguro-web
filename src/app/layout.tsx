@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { setDefaultOptions } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
+setDefaultOptions({ locale: ptBR });
 
 const inter = Inter({ subsets: ["latin"] });
 

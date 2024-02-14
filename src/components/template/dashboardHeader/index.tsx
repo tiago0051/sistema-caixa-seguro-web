@@ -42,6 +42,14 @@ export function DashboardHeader() {
               <NavigationMenuItem>Caixa</NavigationMenuItem>
             </Link>
             <Link
+              href="/dashboard/transactionsList"
+              className={`hover:underline text-secondary-foreground ${
+                selectedPage === "counter" && "underline"
+              }`}
+            >
+              <NavigationMenuItem>Transações</NavigationMenuItem>
+            </Link>
+            <Link
               href="/dashboard/products"
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "products" && "underline"
