@@ -44,7 +44,7 @@ export function DashboardHeader() {
             <Link
               href="/dashboard/transactionsList"
               className={`hover:underline text-secondary-foreground ${
-                selectedPage === "counter" && "underline"
+                selectedPage === "transactionsList" && "underline"
               }`}
             >
               <NavigationMenuItem>Transações</NavigationMenuItem>
@@ -85,6 +85,11 @@ export function DashboardHeader() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            <DropdownMenuLabel>Empresa: Móveis Papucaia LTDA</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <Link href="?showChangeCompanyDialog=true">
+              <DropdownMenuItem>Trocar de empresa</DropdownMenuItem>
+            </Link>
             <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Meus dados</DropdownMenuItem>

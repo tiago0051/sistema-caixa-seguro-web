@@ -36,3 +36,10 @@
 - - Poder cadastrar características da categoria e indicar no produto.
 - - Poder adicionar quantidade no estoque de um produto já existente.
 - - Conseguir identificar quais produtos possuem pré-vendas.
+
+##Fluxos
+
+###Autenticação
+
+- Autenticar com CPF e senha
+- Selecionar qual empresa o usuário vai querer interagir
