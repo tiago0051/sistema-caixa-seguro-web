@@ -42,4 +42,9 @@
 ###Autenticação
 
 - Autenticar com CPF e senha
+- Recuperação de senha
+- - Utilizar e-mail para a recuperação, preenchendo um código de validação
+- Primeiro acesso
+- - Criação da primeira senha
 - Selecionar qual empresa o usuário vai querer interagir
+- - Caso o usuário já tenha entrado no sistema anteriormente, autenticar com a ultima empresa logada

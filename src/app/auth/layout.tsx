@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface AuthLayoutProps {
@@ -17,7 +18,26 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           className="object-cover h-full opacity-80 shadow-sm"
         />
       </div>
-      <div className="col-span-12 md:col-span-5">{children}</div>
+      <div className="col-span-12 md:col-span-5">
+        <div className="flex flex-col justify-between h-screen items-center p-8">
+          <div className="flex justify-end w-full">
+            <Link href="/suporte">Suporte</Link>
+          </div>
+          <div className="items-center justify-center gap-8 flex flex-col max-w-sm w-full">
+            <div className="mx-auto bg-secondary/80 w-24 h-24 rounded-full flex justify-center items-center shadow-md shadow-black/10">
+              <Image
+                src="/images/logo.svg"
+                alt="Logo Sistema caixa seguro"
+                width={60}
+                height={60}
+              />
+            </div>
+
+            {children}
+          </div>
+          <div></div>
+        </div>
+      </div>
     </div>
   );
 }

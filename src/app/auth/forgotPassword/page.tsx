@@ -3,26 +3,25 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 
-export default function SignIn() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
 
-  async function onSubmit(event: FormEvent) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    router.push("/dashboard/counter");
+    router.push("/auth/forgotPassword/confirmCode");
   }
 
   return (
     <div className="w-full grid gap-8">
       <div>
-        <h2 className="text-center text-xl">Seja bem-vindo</h2>
+        <h2 className="text-center text-xl">Podemos te ajudar</h2>
         <p className="text-base text-center">
-          Insira seu CPF e senha para entrar no sistema
+          Insira seu CPF para recuperar sua senha
         </p>
       </div>
 
@@ -31,19 +30,10 @@ export default function SignIn() {
           <Label>CPF</Label>
           <Input />
         </div>
-        <div className="grid gap-2">
-          <Label>Senha</Label>
-          <Input />
-        </div>
-        <div className="flex justify-end">
-          <Link
-            href="/auth/forgotPassword"
-            className="hover:underline hover:text-blue-600"
-          >
-            Esqueceu sua senha?
-          </Link>
-        </div>
-        <Button type="submit">Entrar</Button>
+        <Button type="submit">Enviar e-mail para recuperação</Button>
+        <Link href="/auth/signIn" className="text-center">
+          <Button variant="link">Voltar para a tela de entrada</Button>
+        </Link>
       </form>
     </div>
   );
