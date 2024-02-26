@@ -48,3 +48,6 @@
 - - Criação da primeira senha
 - Selecionar qual empresa o usuário vai querer interagir
 - - Caso o usuário já tenha entrado no sistema anteriormente, autenticar com a ultima empresa logada
+
+##Emissão de NF-e e NFC-e
+A comunicação é feita através de SOAP
