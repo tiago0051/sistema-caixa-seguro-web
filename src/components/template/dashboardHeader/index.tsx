@@ -14,11 +14,13 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { ParamsI } from "@/types/params";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 export function DashboardHeader() {
+  const { clientId, companyId } = useParams<ParamsI>();
   const pathname = usePathname();
   const selectedPage = pathname.split("/")[2];
 
@@ -34,7 +36,7 @@ export function DashboardHeader() {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-8">
             <Link
-              href="/dashboard/counter"
+              href={`/dashboard/${clientId}/company/${companyId}/counter`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "counter" && "underline"
               }`}
@@ -42,7 +44,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Caixa</NavigationMenuItem>
             </Link>
             <Link
-              href="/dashboard/transactionsList"
+              href={`/dashboard/${clientId}/company/${companyId}/transactionsList`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "transactionsList" && "underline"
               }`}
@@ -50,7 +52,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Transações</NavigationMenuItem>
             </Link>
             <Link
-              href="/dashboard/products"
+              href={`/dashboard/${clientId}/company/${companyId}/products`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "products" && "underline"
               }`}
@@ -58,7 +60,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Produtos</NavigationMenuItem>
             </Link>
             <Link
-              href="/dashboard/customers"
+              href={`/dashboard/${clientId}/company/${companyId}/customers`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "customers" && "underline"
               }`}
@@ -66,7 +68,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Clientes</NavigationMenuItem>
             </Link>
             <Link
-              href="/dashboard/configuration"
+              href={`/dashboard/${clientId}/company/${companyId}/configuration`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "configuration" && "underline"
               }`}
