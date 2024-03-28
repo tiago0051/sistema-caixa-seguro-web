@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Contexts } from "./contexts";
 
 setDefaultOptions({ locale: ptBR });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Contexts>{children}</Contexts>
+      </body>
     </html>
   );
 }
