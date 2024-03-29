@@ -1,24 +1,29 @@
 import { SignInDTO } from "./page.dto";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { FormInputs } from "./page.interface";
 import { useToast } from "@/components/ui/use-toast";
 import { authenticateAction } from "@/app/actions/services/authHook";
 import { useFormState } from "react-dom";
 import { IEmployee } from "@/types/employee/employee";
+import { ActionResponse } from "@/app/actions/interfaces/action.interface";
+import { useEffect } from "react";
 
 export function SignInService(): SignInDTO {
   const { toast } = useToast();
 
-  const form = useForm<FormInputs>();
-  const [state, formAction] = useFormState<IEmployee, FormInputs>(
+  const [state, formAction] = useFormState<ActionResponse<IEmployee>, FormData>(
     authenticateAction,
-    null
+    {}
   );
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {};
+  useEffect(() => {
+    if (state.error)
+      toast({
+        title: "Problema na autenticação",
+        description: state.error.message,
+        variant: "destructive",
+      });
+  }, [state, toast]);
 
   return {
-    form,
-    onSubmit,
+    formAction,
   };
 }

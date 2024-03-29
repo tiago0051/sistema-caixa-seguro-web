@@ -1,12 +1,13 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { SignInDTO } from "./page.dto";
+import { useFormStatus } from "react-dom";
+import { FiLoader } from "react-icons/fi";
+import { cpfMask } from "@/utils/stringFormat";
 
-export default function SignInView({ form, onSubmit }: SignInDTO) {
+export default function SignInView({ formAction }: SignInDTO) {
   return (
     <div className="w-full grid gap-8">
       <div>
@@ -16,28 +17,47 @@ export default function SignInView({ form, onSubmit }: SignInDTO) {
         </p>
       </div>
 
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="grid gap-4 w-full"
-      >
-        <div className="grid gap-2">
-          <Label>CPF</Label>
-          <Input {...form.register("taxId")} type="text" />
-        </div>
-        <div className="grid gap-2">
-          <Label>Senha</Label>
-          <Input {...form.register("password")} type="password" />
-        </div>
-        <div className="flex justify-end">
-          <Link
-            href="/auth/forgotPassword"
-            className="hover:underline hover:text-blue-600"
-          >
-            Esqueceu sua senha?
-          </Link>
-        </div>
-        <Button type="submit">Entrar</Button>
+      <form action={formAction} className="grid gap-4 w-full">
+        <FormChild />
       </form>
     </div>
+  );
+}
+
+function FormChild() {
+  const { pending } = useFormStatus();
+  return (
+    <>
+      <div className="grid gap-2">
+        <Label>CPF</Label>
+        <Input
+          type="text"
+          name="taxId"
+          onChange={(e) => (e.target.value = cpfMask(e.target.value))}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label>Senha</Label>
+        <Input type="password" name="password" />
+      </div>
+      <div className="flex justify-end">
+        <Link
+          href="/auth/forgotPassword"
+          className="hover:underline hover:text-blue-600"
+        >
+          Esqueceu sua senha?
+        </Link>
+      </div>
+      <Button type="submit" disabled={pending}>
+        {pending ? (
+          <FiLoader
+            data-loading={pending}
+            className="data-[loading=true]:animate-spin"
+          />
+        ) : (
+          "Entrar"
+        )}
+      </Button>
+    </>
   );
 }
