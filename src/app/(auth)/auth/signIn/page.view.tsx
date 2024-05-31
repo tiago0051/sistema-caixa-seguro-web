@@ -5,9 +5,9 @@ import Link from "next/link";
 import { SignInDTO } from "./page.dto";
 import { useFormStatus } from "react-dom";
 import { FiLoader } from "react-icons/fi";
-import { cpfMask } from "@/utils/stringFormat";
 
-export default function SignInView({ formAction }: SignInDTO) {
+export default function SignInView({ formSubmit, form }: SignInDTO) {
+  const { register, handleSubmit } = form;
   return (
     <div className="w-full grid gap-8">
       <div>
@@ -17,37 +17,33 @@ export default function SignInView({ formAction }: SignInDTO) {
         </p>
       </div>
 
-      <form action={formAction} className="grid gap-4 w-full">
-        <FormChild />
+      <form onSubmit={handleSubmit(formSubmit)} className="grid gap-4 w-full">
+        <fieldset className="grid gap-2">
+          <Label htmlFor="email">E-mail</Label>
+          <Input type="email" {...register("email")} />
+        </fieldset>
+        <fieldset className="grid gap-2">
+          <Label htmlFor="password">Senha</Label>
+          <Input type="password" {...register("password")} />
+        </fieldset>
+        <div className="flex justify-end">
+          <Link
+            href="/auth/forgotPassword"
+            className="hover:underline hover:text-blue-600"
+          >
+            Esqueceu sua senha?
+          </Link>
+        </div>
+        <SubmitButton />
       </form>
     </div>
   );
 }
 
-function FormChild() {
+function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <>
-      <div className="grid gap-2">
-        <Label>CPF</Label>
-        <Input
-          type="text"
-          name="taxId"
-          onChange={(e) => (e.target.value = cpfMask(e.target.value))}
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label>Senha</Label>
-        <Input type="password" name="password" />
-      </div>
-      <div className="flex justify-end">
-        <Link
-          href="/auth/forgotPassword"
-          className="hover:underline hover:text-blue-600"
-        >
-          Esqueceu sua senha?
-        </Link>
-      </div>
       <Button type="submit" disabled={pending}>
         {pending ? (
           <FiLoader

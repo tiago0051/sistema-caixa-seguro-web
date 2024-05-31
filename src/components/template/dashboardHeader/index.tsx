@@ -89,7 +89,7 @@ export function DashboardHeader() {
           <DropdownMenuContent>
             <DropdownMenuLabel>Empresa: Móveis Papucaia LTDA</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link href="?showChangeCompanyDialog=true">
+            <Link href="/">
               <DropdownMenuItem>Trocar de empresa</DropdownMenuItem>
             </Link>
             <DropdownMenuLabel>Minha conta</DropdownMenuLabel>

@@ -1,4 +1,3 @@
-import { ChangeCompanyDialog } from "@/components/template/changeCompanyDialog";
 import { DashboardHeader } from "@/components/template/dashboardHeader";
 import { ReactNode } from "react";
 
@@ -11,7 +10,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <div>
       <div>
         <DashboardHeader />
-        <ChangeCompanyDialog />
       </div>
       <div className="p-8">{children}</div>
     </div>
