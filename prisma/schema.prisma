@@ -1,41 +1,38 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+datasource db {
+  provider = "postgresql" // Substitua pelo seu banco de dados
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 model Client {
-  id        String    @id @default(uuid())
-  name      String
+  id        String    @id @default(uuid()) @map("id")
+  name      String    @map("name")
   companies Company[]
 
   @@map("client")
 }
 
 model Company {
-  id       String    @id @default(uuid())
-  name     String
-  clientId String
+  id       String    @id @default(uuid()) @map("id")
+  name     String    @map("name")
+  clientId String    @map("client_id")
   client   Client    @relation(fields: [clientId], references: [id])
   branches Branch[]
   storages Storage[]
+  products Product[]
 
   @@map("company")
 }
 
 model Branch {
-  id        String  @id @default(uuid())
-  name      String
-  companyId String
+  id        String  @id @default(uuid()) @map("id")
+  name      String  @map("name")
+  companyId String  @map("company_id")
   company   Company @relation(fields: [companyId], references: [id])
   users     User[]  @relation("UsersBranches")
 
@@ -43,20 +40,46 @@ model Branch {
 }
 
 model Storage {
-  id        String  @id @default(uuid())
-  name      String
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id])
+  id              String           @id @default(uuid()) @map("id")
+  name            String           @map("name")
+  companyId       String           @map("company_id")
+  company         Company          @relation(fields: [companyId], references: [id])
+  productStorages ProductStorage[]
 
   @@map("storage")
 }
 
 model User {
-  id       String   @id @default(uuid())
-  email    String   @unique
-  password String
-  name     String
+  id       String   @id @default(uuid()) @map("id")
+  email    String   @unique @map("email")
+  password String   @map("password")
+  name     String   @map("name")
   branches Branch[] @relation("UsersBranches")
 
   @@map("user")
+}
+
+model Product {
+  id              String           @id @default(uuid()) @map("id")
+  name            String           @map("name")
+  costPrice       Float            @map("cost_price")
+  salePrice       Float            @map("sale_price")
+  companyId       String           @map("company_id")
+  company         Company          @relation(fields: [companyId], references: [id])
+  productStorages ProductStorage[]
+
+  @@map("product")
+}
+
+model ProductStorage {
+  productId String   @map("product_id")
+  storageId String   @map("storage_id")
+  quantity  Int      @map("quantity")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  product   Product  @relation(fields: [productId], references: [id])
+  storage   Storage  @relation(fields: [storageId], references: [id])
+
+  @@id([productId, storageId])
+  @@map("product_storage")
 }

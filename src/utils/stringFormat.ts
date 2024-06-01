@@ -26,3 +26,11 @@ export function cpfMask(val: string) {
 
   return cpfValue?.substring(0, 20);
 }
+
+export function getNameInitials(text: string) {
+  const splittedName = text.split(" ");
+
+  return splittedName.length > 1
+    ? `${splittedName[0][0]}${splittedName[splittedName.length - 1][0]}`
+    : `${splittedName[0][0]}`;
+}

@@ -1,6 +1,6 @@
-import "server-only";
-
+import { UserI } from "@/types/user/user";
 import { dbClient } from "./prismaClient";
+import { getNameInitials } from "@/utils/stringFormat";
 
 export async function getUserWithPassword(email: string) {
   const userDB = dbClient.user.findUnique({
@@ -59,4 +59,30 @@ export async function getUserClientsAndCompanies(userId: string) {
   });
 
   return clients;
+}
+
+export async function getUsersList(companyId: string): Promise<UserI[]> {
+  const usersListDB = await dbClient.user.findMany({
+    where: {
+      branches: {
+        some: {
+          companyId,
+        },
+      },
+    },
+    select: {
+      email: true,
+      id: true,
+      name: true,
+    },
+  });
+
+  return usersListDB.map((user) => ({
+    email: user.email,
+    firstName: user.name.split(" ")[0],
+    id: user.id,
+    lastName: user.name.split(" ").pop() || "",
+    name: user.name,
+    nameInitials: getNameInitials(user.name),
+  }));
 }

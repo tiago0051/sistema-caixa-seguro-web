@@ -1,6 +1,6 @@
 "use client";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { authenticationSignOutAction } from "@/app/actions/services/authAction";
+import { signOut } from "@/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +14,24 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { ParamsI } from "@/types/params";
+import { ClientI } from "@/types/client/client";
+import { CompanyI } from "@/types/company/company";
+import { UserI } from "@/types/user/user";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
-export function DashboardHeader() {
-  const { clientId, companyId } = useParams<ParamsI>();
+interface DashboardHeaderProps {
+  client: ClientI;
+  company: CompanyI;
+  user: UserI;
+}
+
+export function DashboardHeader({
+  client,
+  company,
+  user,
+}: DashboardHeaderProps) {
   const pathname = usePathname();
   const selectedPage = pathname.split("/")[2];
 
@@ -36,7 +47,7 @@ export function DashboardHeader() {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-8">
             <Link
-              href={`/dashboard/${clientId}/company/${companyId}/counter`}
+              href={`/dashboard/${client.id}/company/${company.id}/counter`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "counter" && "underline"
               }`}
@@ -44,7 +55,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Caixa</NavigationMenuItem>
             </Link>
             <Link
-              href={`/dashboard/${clientId}/company/${companyId}/transactionsList`}
+              href={`/dashboard/${client.id}/company/${company.id}/transactionsList`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "transactionsList" && "underline"
               }`}
@@ -52,7 +63,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Transações</NavigationMenuItem>
             </Link>
             <Link
-              href={`/dashboard/${clientId}/company/${companyId}/products`}
+              href={`/dashboard/${client.id}/company/${company.id}/products`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "products" && "underline"
               }`}
@@ -60,7 +71,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Produtos</NavigationMenuItem>
             </Link>
             <Link
-              href={`/dashboard/${clientId}/company/${companyId}/customers`}
+              href={`/dashboard/${client.id}/company/${company.id}/customers`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "customers" && "underline"
               }`}
@@ -68,7 +79,7 @@ export function DashboardHeader() {
               <NavigationMenuItem>Clientes</NavigationMenuItem>
             </Link>
             <Link
-              href={`/dashboard/${clientId}/company/${companyId}/configuration`}
+              href={`/dashboard/${client.id}/company/${company.id}/configuration`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "configuration" && "underline"
               }`}
@@ -81,23 +92,22 @@ export function DashboardHeader() {
       <div className="hidden md:flex items-center gap-8">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            <div className="w-10 h-10 rounded-full flex justify-center items-center border-foreground border">
+              <p className="text-sm text-foreground">{user.nameInitials}</p>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>Empresa: Móveis Papucaia LTDA</DropdownMenuLabel>
+            <DropdownMenuLabel>Empresa: {company.name}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href="/">
               <DropdownMenuItem>Trocar de empresa</DropdownMenuItem>
             </Link>
-            <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+            <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Meus dados</DropdownMenuItem>
-            <Link href="/auth/signIn">
-              <DropdownMenuItem>Sair</DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem onClick={() => authenticationSignOutAction()}>
+              Sair
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Link

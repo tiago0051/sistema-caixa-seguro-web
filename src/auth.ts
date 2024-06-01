@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { getUserWithPassword } from "./repository/user";
 import { ZodError, z } from "zod";
 import { compare, hash } from "bcryptjs";
+import { getNameInitials } from "./utils/stringFormat";
 
 const signInSchema = z.object({
   email: z
@@ -21,12 +22,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/auth/signIn",
   },
   callbacks: {
-    session: ({ session, token }) => {
+    session: ({ session, token, user }) => {
       return {
         ...session,
         user: {
-          ...session.user,
+          firstName: session.user.name.split(" ")[0],
           id: token.sub,
+          lastName: session.user.name.split(" ").pop(),
+          name: session.user.name,
+          nameInitials: getNameInitials(session.user.name),
+          email: session.user.email,
         },
       };
     },
@@ -42,6 +47,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = await signInSchema.parseAsync(
             credentials
           );
+
+          // console.log(await hash(password, 10));
 
           const user = await getUserWithPassword(email);
 

@@ -11,30 +11,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
+import { UsersListViewProps } from "./page.interface";
 
-export default function DistributionCenterPage() {
+export function UsersListView({ users }: UsersListViewProps) {
   return (
     <div className="grid gap-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Centro de distribuição (CD)</h1>
+        <h1 className="text-3xl font-bold">Usuários</h1>
         <div>
-          <Button>Adicionar CD</Button>
+          <Link href="/dashboard/products/0">
+            <Button>Adicionar produto</Button>
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-[350px_auto]">
         <div className="border-r border-separate mr-4 grid gap-6 pr-4">
-          <h3 className="font-semibold">Pesquise pelo cliente</h3>
+          <h3 className="font-semibold">Pesquise pelo usuário</h3>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label>Código</Label>
               <Input />
             </div>
             <div className="grid gap-2">
-              <Label>Nome</Label>
+              <Label>Código de barras</Label>
               <Input />
             </div>
             <div className="grid gap-2">
-              <Label>CPF</Label>
+              <Label>Nome do produto</Label>
+              <Input />
+            </div>
+            <div className="grid gap-2">
+              <Label>Nome do fabricante</Label>
               <Input />
             </div>
             <Button>Filtrar</Button>
@@ -42,7 +50,7 @@ export default function DistributionCenterPage() {
         </div>
         <div>
           <Table>
-            <TableCaption>Lista de clientes.</TableCaption>
+            <TableCaption>Lista de Usuários.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[50px]">
@@ -50,26 +58,22 @@ export default function DistributionCenterPage() {
                 </TableHead>
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
-                <TableHead>CPF</TableHead>
+                <TableHead className="text-right">E-mail</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">
-                  <Checkbox />
-                </TableCell>
-                <TableCell className="font-medium">2FG3D</TableCell>
-                <TableCell>Jorge Luiz</TableCell>
-                <TableCell>655.526.500-00</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">
-                  <Checkbox />
-                </TableCell>
-                <TableCell className="font-medium">2FG3D</TableCell>
-                <TableCell>Jorge Luiz</TableCell>
-                <TableCell>655.526.500-00</TableCell>
-              </TableRow>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">
+                    <Checkbox />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    #{user.id.split("-")[0]}
+                  </TableCell>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell className="text-right">{user.email}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
