@@ -79,7 +79,7 @@ export function DashboardHeader({
               <NavigationMenuItem>Clientes</NavigationMenuItem>
             </Link>
             <Link
-              href={`/dashboard/${client.id}/company/${company.id}/configuration`}
+              href={`/dashboard/${client.id}/company/${company.id}/configuration/users`}
               className={`hover:underline text-secondary-foreground ${
                 selectedPage === "configuration" && "underline"
               }`}

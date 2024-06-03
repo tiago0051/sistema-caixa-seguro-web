@@ -13,7 +13,14 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 
-export default function ProductsPage() {
+interface ProductsPageProps {
+  params: {
+    clientId: string;
+    companyId: string;
+  };
+}
+
+export default function ProductsPage({ params }: ProductsPageProps) {
   let products = [
     {
       id: 1,
@@ -78,7 +85,9 @@ export default function ProductsPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Produtos</h1>
         <div>
-          <Link href="/dashboard/products/0">
+          <Link
+            href={`/dashboard/${params.clientId}/company/${params.companyId}/products/0`}
+          >
             <Button>Adicionar produto</Button>
           </Link>
         </div>

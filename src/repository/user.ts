@@ -86,3 +86,23 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
     nameInitials: getNameInitials(user.name),
   }));
 }
+
+export async function registerUser(
+  name: string,
+  email: string,
+  passwordHash: string,
+  branchId: string
+): Promise<void> {
+  await dbClient.user.create({
+    data: {
+      email,
+      name,
+      password: passwordHash,
+      branches: {
+        connect: {
+          id: branchId,
+        },
+      },
+    },
+  });
+}

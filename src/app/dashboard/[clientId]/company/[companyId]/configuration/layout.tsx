@@ -1,31 +1,32 @@
+"use client";
+
 import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
+  NavigationMenu,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface ConfigurationLayoutProps {
   children: ReactNode;
+  params: { clientId: string; companyId: string };
 }
 
 export default function ConfigurationLayout({
   children,
+  params,
 }: ConfigurationLayoutProps) {
   return (
     <div>
-      <Menubar>
-        <MenubarMenu>
-          <MenubarTrigger>Usuarios</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>Criar usuário</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuLink href="`/dashboard/${params.clientId}/company/${params.companyId}/configuration/users`">
+            Usuários
+          </NavigationMenuLink>
+        </NavigationMenuList>
+      </NavigationMenu>
+
       <div>{children}</div>
     </div>
   );

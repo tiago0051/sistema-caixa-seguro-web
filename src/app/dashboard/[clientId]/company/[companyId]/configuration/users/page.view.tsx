@@ -11,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import { UsersListViewProps } from "./page.interface";
+import { ModalRegisterUser } from "./components/ModalRegisterUser";
 
 export function UsersListView({ users }: UsersListViewProps) {
   return (
@@ -20,9 +20,7 @@ export function UsersListView({ users }: UsersListViewProps) {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <div>
-          <Link href="/dashboard/products/0">
-            <Button>Adicionar produto</Button>
-          </Link>
+          <ModalRegisterUser />
         </div>
       </div>
       <div className="grid grid-cols-[350px_auto]">
@@ -58,7 +56,7 @@ export function UsersListView({ users }: UsersListViewProps) {
                 </TableHead>
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
-                <TableHead className="text-right">E-mail</TableHead>
+                <TableHead>E-mail</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -71,7 +69,7 @@ export function UsersListView({ users }: UsersListViewProps) {
                     #{user.id.split("-")[0]}
                   </TableCell>
                   <TableCell>{user.name}</TableCell>
-                  <TableCell className="text-right">{user.email}</TableCell>
+                  <TableCell>{user.email}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
