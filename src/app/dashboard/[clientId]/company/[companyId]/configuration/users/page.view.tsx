@@ -13,14 +13,17 @@ import {
 } from "@/components/ui/table";
 import { UsersListViewProps } from "./page.interface";
 import { ModalRegisterUser } from "./components/ModalRegisterUser";
+import { UsersListTableBody } from "./components/usersListTableBody";
+import { Suspense } from "react";
+import { UsersListTableBodySkeleton } from "./components/usersListTableBodySkeleton";
 
-export function UsersListView({ users }: UsersListViewProps) {
+export function UsersListView({ branches, params }: UsersListViewProps) {
   return (
     <div className="grid gap-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <div>
-          <ModalRegisterUser />
+          <ModalRegisterUser branches={branches} />
         </div>
       </div>
       <div className="grid grid-cols-[350px_auto]">
@@ -32,15 +35,11 @@ export function UsersListView({ users }: UsersListViewProps) {
               <Input />
             </div>
             <div className="grid gap-2">
-              <Label>Código de barras</Label>
+              <Label>Nome</Label>
               <Input />
             </div>
             <div className="grid gap-2">
-              <Label>Nome do produto</Label>
-              <Input />
-            </div>
-            <div className="grid gap-2">
-              <Label>Nome do fabricante</Label>
+              <Label>E-mail</Label>
               <Input />
             </div>
             <Button>Filtrar</Button>
@@ -51,28 +50,14 @@ export function UsersListView({ users }: UsersListViewProps) {
             <TableCaption>Lista de Usuários.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[50px]">
-                  <Checkbox />
-                </TableHead>
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
                 <TableHead>E-mail</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">
-                    <Checkbox />
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    #{user.id.split("-")[0]}
-                  </TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <Suspense fallback={<UsersListTableBodySkeleton />}>
+              <UsersListTableBody companyId={params.companyId} />
+            </Suspense>
           </Table>
         </div>
       </div>

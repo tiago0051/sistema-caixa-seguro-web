@@ -37,9 +37,9 @@
 - - Poder adicionar quantidade no estoque de um produto já existente.
 - - Conseguir identificar quais produtos possuem pré-vendas.
 
-##Fluxos
+## Fluxos
 
-###Autenticação
+### Autenticação
 
 - Autenticar com CPF e senha
 - Recuperação de senha

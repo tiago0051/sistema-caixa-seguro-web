@@ -8,5 +8,5 @@ export default async function UsersList({
 }) {
   const props = await usersListService({ params });
 
-  return <UsersListView {...props} />;
+  return <UsersListView {...props} params={params} />;
 }

@@ -1,10 +1,14 @@
-import { ProductI } from "@/types/product/product";
-import { UserI } from "@/types/user/user";
+import { BranchI } from "@/types/branch/branch";
+
+export interface UsersListServiceData {
+  params: { companyId: string };
+}
 
 export interface UsersListServiceReturn {
-  users: UserI[];
+  branches: BranchI[];
 }
 
 export interface UsersListViewProps {
-  users: UserI[];
+  branches: BranchI[];
+  params: { companyId: string };
 }

@@ -1,22 +1,8 @@
+"use server";
+
 import { UserI } from "@/types/user/user";
 import { dbClient } from "./prismaClient";
 import { getNameInitials } from "@/utils/stringFormat";
-
-export async function getUserWithPassword(email: string) {
-  const userDB = dbClient.user.findUnique({
-    where: {
-      email,
-    },
-    select: {
-      email: true,
-      id: true,
-      name: true,
-      password: true,
-    },
-  });
-
-  return userDB;
-}
 
 export async function getUserClientsAndCompanies(userId: string) {
   const clients = await dbClient.client.findMany({
@@ -61,6 +47,25 @@ export async function getUserClientsAndCompanies(userId: string) {
   return clients;
 }
 
+export async function getUserBranchesList(companyId: string, userId: string) {
+  const branchesListDB = dbClient.branch.findMany({
+    where: {
+      companyId,
+      users: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return branchesListDB;
+}
+
 export async function getUsersList(companyId: string): Promise<UserI[]> {
   const usersListDB = await dbClient.user.findMany({
     where: {
@@ -75,6 +80,9 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
       id: true,
       name: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   return usersListDB.map((user) => ({
@@ -87,17 +95,31 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
   }));
 }
 
+export async function getUserWithPassword(email: string) {
+  const userDB = dbClient.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      email: true,
+      id: true,
+      name: true,
+      password: true,
+    },
+  });
+
+  return userDB;
+}
+
 export async function registerUser(
   name: string,
   email: string,
-  passwordHash: string,
   branchId: string
 ): Promise<void> {
   await dbClient.user.create({
     data: {
       email,
       name,
-      password: passwordHash,
       branches: {
         connect: {
           id: branchId,

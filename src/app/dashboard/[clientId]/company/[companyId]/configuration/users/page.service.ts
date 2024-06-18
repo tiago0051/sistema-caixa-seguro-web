@@ -1,14 +1,18 @@
-import { UsersListServiceReturn } from "./page.interface";
-import { getUsersList } from "@/repository/user";
+import { UsersListServiceData, UsersListServiceReturn } from "./page.interface";
+import { getUserBranchesList } from "@/repository/user";
+import { auth } from "@/auth";
 
 export async function usersListService({
   params,
-}: {
-  params: { companyId: string };
-}): Promise<UsersListServiceReturn> {
-  const users = await getUsersList(params.companyId);
+}: UsersListServiceData): Promise<UsersListServiceReturn> {
+  const session = await auth();
+
+  const branches = await getUserBranchesList(
+    params.companyId,
+    session!.user.id
+  );
 
   return {
-    users,
+    branches,
   };
 }
