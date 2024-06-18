@@ -66,6 +66,21 @@ export async function getUserBranchesList(companyId: string, userId: string) {
   return branchesListDB;
 }
 
+export async function getUserByEmail(email: string) {
+  const userDB = dbClient.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+    },
+  });
+
+  return userDB;
+}
+
 export async function getUsersList(companyId: string): Promise<UserI[]> {
   const usersListDB = await dbClient.user.findMany({
     where: {
@@ -109,6 +124,21 @@ export async function getUserWithPassword(email: string) {
   });
 
   return userDB;
+}
+
+export async function linkUserToBranch(userId: string, branchId: string) {
+  await dbClient.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      branches: {
+        connect: {
+          id: branchId,
+        },
+      },
+    },
+  });
 }
 
 export async function registerUser(

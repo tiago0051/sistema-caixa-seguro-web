@@ -23,7 +23,7 @@ export function UsersListView({ branches, params }: UsersListViewProps) {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <div>
-          <ModalRegisterUser branches={branches} />
+          <ModalRegisterUser branches={branches} companyId={params.companyId} />
         </div>
       </div>
       <div className="grid grid-cols-[350px_auto]">

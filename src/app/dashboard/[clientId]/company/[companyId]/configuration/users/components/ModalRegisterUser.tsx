@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { registerUser } from "@/repository/user";
+import { registerUserDomain } from "@/domain/user";
 import { BranchI } from "@/types/branch/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -37,6 +37,7 @@ import { z } from "zod";
 
 interface ModalRegisterUserProps {
   branches: BranchI[];
+  companyId: string;
 }
 
 const formSchema = z.object({
@@ -55,7 +56,10 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
-export function ModalRegisterUser({ branches }: ModalRegisterUserProps) {
+export function ModalRegisterUser({
+  branches,
+  companyId,
+}: ModalRegisterUserProps) {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -66,16 +70,29 @@ export function ModalRegisterUser({ branches }: ModalRegisterUserProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const submitHandler: SubmitHandler<FormSchemaType> = async (data) => {
-    await registerUser(data.name, data.email, data.branchId);
+    const response = await registerUserDomain(
+      data.name,
+      data.email,
+      companyId,
+      data.branchId
+    );
 
-    setIsOpen(false);
+    if (!response) {
+      setIsOpen(false);
 
-    toast({
-      title: "Sucesso",
-      description: "Usuário criado com sucesso!",
-    });
+      toast({
+        title: "Sucesso",
+        description: "Usuário criado com sucesso!",
+      });
 
-    router.refresh();
+      router.refresh();
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: response,
+      });
+    }
   };
 
   useEffect(() => {
