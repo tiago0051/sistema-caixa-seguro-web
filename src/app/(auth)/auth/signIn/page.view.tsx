@@ -13,7 +13,7 @@ export default function SignInView({ formSubmit, form }: SignInDTO) {
       <div>
         <h2 className="text-center text-xl">Seja bem-vindo</h2>
         <p className="text-base text-center">
-          Insira seu CPF e senha para entrar no sistema
+          Insira seu e-mail e senha para entrar no sistema
         </p>
       </div>
 

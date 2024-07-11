@@ -1,6 +1,5 @@
 "use server";
 
-import { UserI } from "@/types/user/user";
 import { dbClient } from "./prismaClient";
 import { getNameInitials } from "@/utils/stringFormat";
 
@@ -81,6 +80,21 @@ export async function getUserByEmail(email: string) {
   return userDB;
 }
 
+export async function getUserById(userId: string) {
+  const user = await dbClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      email: true,
+      id: true,
+      name: true,
+    },
+  });
+
+  return user;
+}
+
 export async function getUsersList(companyId: string): Promise<UserI[]> {
   const usersListDB = await dbClient.user.findMany({
     where: {
@@ -94,6 +108,7 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
       email: true,
       id: true,
       name: true,
+      branches: true,
     },
     orderBy: {
       name: "asc",
@@ -101,6 +116,7 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
   });
 
   return usersListDB.map((user) => ({
+    branches: user.branches,
     email: user.email,
     firstName: user.name.split(" ")[0],
     id: user.id,
@@ -155,6 +171,28 @@ export async function registerUser(
           id: branchId,
         },
       },
+    },
+  });
+}
+
+export async function updateUser(
+  userId: string,
+  name: string,
+  email: string,
+  branchesId: string[]
+) {
+  const user = await dbClient.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      branches: {
+        connect: branchesId.map((branchId) => ({
+          id: branchId,
+        })),
+      },
+      email: email,
+      name: name,
     },
   });
 }

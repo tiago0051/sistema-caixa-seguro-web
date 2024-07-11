@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { registerUserDomain } from "@/domain/user";
-import { BranchI } from "@/types/branch/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

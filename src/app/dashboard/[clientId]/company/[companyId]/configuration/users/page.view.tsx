@@ -1,12 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Table,
-  TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -20,14 +17,14 @@ import { UsersListTableBodySkeleton } from "./components/usersListTableBodySkele
 export function UsersListView({ branches, params }: UsersListViewProps) {
   return (
     <div className="grid gap-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap gap-4 justify-between items-center">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <div>
           <ModalRegisterUser branches={branches} companyId={params.companyId} />
         </div>
       </div>
-      <div className="grid grid-cols-[350px_auto]">
-        <div className="border-r border-separate mr-4 grid gap-6 pr-4">
+      <div className="grid sm:grid-cols-[350px_auto] gap-4">
+        <div className="sm:border-r sm:border-separate gap-6 sm:pr-4 flex flex-col">
           <h3 className="font-semibold">Pesquise pelo usuário</h3>
           <div className="grid gap-4">
             <div className="grid gap-2">
@@ -45,7 +42,7 @@ export function UsersListView({ branches, params }: UsersListViewProps) {
             <Button>Filtrar</Button>
           </div>
         </div>
-        <div>
+        <div className="grid">
           <Table>
             <TableCaption>Lista de Usuários.</TableCaption>
             <TableHeader>
@@ -53,10 +50,14 @@ export function UsersListView({ branches, params }: UsersListViewProps) {
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
                 <TableHead>E-mail</TableHead>
+                <TableHead> </TableHead>
               </TableRow>
             </TableHeader>
             <Suspense fallback={<UsersListTableBodySkeleton />}>
-              <UsersListTableBody companyId={params.companyId} />
+              <UsersListTableBody
+                branches={branches}
+                companyId={params.companyId}
+              />
             </Suspense>
           </Table>
         </div>
