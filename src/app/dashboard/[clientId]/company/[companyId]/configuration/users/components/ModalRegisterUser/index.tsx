@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { updateUserDomain } from "@/domain/user";
+import { registerUserDomain, updateUserDomain } from "@/domain/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,9 +29,8 @@ import { FiEdit, FiLoader } from "react-icons/fi";
 import { z } from "zod";
 import { TableBranches } from "./components/tableBranches";
 
-interface ModalEditUserProps {
+interface ModalRegisterUserProps {
   branches: BranchI[];
-  user: UserI;
 }
 
 const formSchema = z.object({
@@ -50,16 +49,16 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
-export function ModalEditUser({ branches, user }: ModalEditUserProps) {
+export function ModalRegisterUser({ branches }: ModalRegisterUserProps) {
   const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      branchesId: user.branches.map((branch) => branch.id),
-      email: user.email,
-      name: user.name,
+      branchesId: [],
+      email: "",
+      name: "",
     },
   });
 
@@ -78,8 +77,7 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
 
     if (error) return;
 
-    const response = await updateUserDomain(
-      user.id,
+    const response = await registerUserDomain(
       data.name,
       data.email,
       data.branchesId
@@ -107,15 +105,13 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
   return (
     <Dialog onOpenChange={(state) => setIsOpen(state)} open={isOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <FiEdit />
-        </Button>
+        <Button>Adicionar usuário</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar usuário</DialogTitle>
+          <DialogTitle>Cadastrar usuário</DialogTitle>
           <DialogDescription>
-            Edite as informações do usuário <b>{user.firstName}</b>
+            Cadastre um novo usuário para acessar a plataforma
           </DialogDescription>
         </DialogHeader>
 

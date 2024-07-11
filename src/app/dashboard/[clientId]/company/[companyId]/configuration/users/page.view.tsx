@@ -9,10 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UsersListViewProps } from "./page.interface";
-import { ModalRegisterUser } from "./components/ModalRegisterUser";
 import { UsersListTableBody } from "./components/usersListTableBody";
 import { Suspense } from "react";
 import { UsersListTableBodySkeleton } from "./components/usersListTableBodySkeleton";
+import { ModalRegisterUser } from "./components/ModalRegisterUser";
 
 export function UsersListView({ branches, params }: UsersListViewProps) {
   return (
@@ -20,7 +20,7 @@ export function UsersListView({ branches, params }: UsersListViewProps) {
       <div className="flex flex-wrap gap-4 justify-between items-center">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <div>
-          <ModalRegisterUser branches={branches} companyId={params.companyId} />
+          <ModalRegisterUser branches={branches} />
         </div>
       </div>
       <div className="grid sm:grid-cols-[350px_auto] gap-4">

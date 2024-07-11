@@ -12,24 +12,14 @@ import {
 export async function registerUserDomain(
   name: string,
   email: string,
-  companyId: string,
-  branchId: string
+  branchesId: string[]
 ) {
   const userAlreadyExists = await getUserByEmail(email);
 
   if (userAlreadyExists) {
-    const userBranchList = await getUserBranchesList(
-      companyId,
-      userAlreadyExists.id
-    );
-
-    if (userBranchList.some((branch) => branch.id === branchId))
-      return `Já existe um usuário com o e-mail '${email}'`;
-
-    await linkUserToBranch(userAlreadyExists.id, branchId);
-  } else {
-    await registerUser(name, email, branchId);
+    return `Já existe um usuário com o e-mail '${email}'`;
   }
+  await registerUser(name, email, branchesId);
 }
 
 export async function updateUserDomain(

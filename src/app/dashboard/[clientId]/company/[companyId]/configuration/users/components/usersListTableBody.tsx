@@ -23,11 +23,7 @@ export async function UsersListTableBody({
           <TableCell className="truncate">{user.name}</TableCell>
           <TableCell>{user.email}</TableCell>
           <TableCell>
-            <ModalEditUser
-              branches={branches}
-              companyId={companyId}
-              user={user}
-            />
+            <ModalEditUser branches={branches} user={user} />
           </TableCell>
         </TableRow>
       ))}

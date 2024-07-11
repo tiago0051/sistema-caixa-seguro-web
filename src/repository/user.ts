@@ -160,17 +160,17 @@ export async function linkUserToBranch(userId: string, branchId: string) {
 export async function registerUser(
   name: string,
   email: string,
-  branchId: string
+  branchesId: string[]
 ): Promise<void> {
   await dbClient.user.create({
     data: {
-      email,
-      name,
       branches: {
-        connect: {
+        connect: branchesId.map((branchId) => ({
           id: branchId,
-        },
+        })),
       },
+      email: email,
+      name: name,
     },
   });
 }
