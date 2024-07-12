@@ -1,10 +1,9 @@
 "use server";
 
 import {
-  getUserBranchesList,
   getUserByEmail,
   getUserById,
-  linkUserToBranch,
+  getUsersList,
   registerUser,
   updateUser,
 } from "@/repository/user";
@@ -39,4 +38,10 @@ export async function updateUserDomain(
   }
 
   await updateUser(user.id, name, email, branchesId);
+}
+
+export async function getUsersListDomain(companyId: string) {
+  const usersList = await getUsersList(companyId);
+
+  return usersList;
 }

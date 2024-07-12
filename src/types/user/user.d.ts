@@ -6,4 +6,5 @@ interface UserI {
   nameInitials: string;
   email: string;
   branches: BranchI[];
+  haveFirstAccess?: boolean;
 }

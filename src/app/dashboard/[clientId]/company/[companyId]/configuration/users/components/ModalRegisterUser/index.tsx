@@ -116,16 +116,13 @@ export function ModalRegisterUser({ branches }: ModalRegisterUserProps) {
         </DialogHeader>
 
         <FormProvider {...form}>
-          <form
-            onSubmit={form.handleSubmit(submitHandler)}
-            className="space-y-4"
-          >
-            <Tabs defaultValue="account" className="w-[400px]">
+          <form onSubmit={form.handleSubmit(submitHandler)}>
+            <Tabs defaultValue="account" className="mb-6">
               <TabsList>
                 <TabsTrigger value="data">Dados</TabsTrigger>
                 <TabsTrigger value="branches">Filiais</TabsTrigger>
               </TabsList>
-              <TabsContent value="data">
+              <TabsContent value="data" className="space-y-4">
                 <FormField
                   control={form.control}
                   name="name"

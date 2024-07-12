@@ -84,6 +84,7 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
       data.email,
       data.branchesId
     );
+
     if (!response) {
       setIsOpen(false);
       toast({
@@ -120,16 +121,13 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
         </DialogHeader>
 
         <FormProvider {...form}>
-          <form
-            onSubmit={form.handleSubmit(submitHandler)}
-            className="space-y-4"
-          >
-            <Tabs defaultValue="account" className="w-[400px]">
+          <form onSubmit={form.handleSubmit(submitHandler)}>
+            <Tabs defaultValue="account" className="mb-6">
               <TabsList>
                 <TabsTrigger value="data">Dados</TabsTrigger>
                 <TabsTrigger value="branches">Filiais</TabsTrigger>
               </TabsList>
-              <TabsContent value="data">
+              <TabsContent value="data" className="space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -187,7 +185,14 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
               </TabsContent>
             </Tabs>
 
-            <SubmitButton />
+            <div className="flex justify-between">
+              <SubmitButton />
+              {!user.haveFirstAccess && (
+                <Button variant="link">
+                  Reenviar e-mail de primeiro acesso
+                </Button>
+              )}
+            </div>
           </form>
         </FormProvider>
       </DialogContent>

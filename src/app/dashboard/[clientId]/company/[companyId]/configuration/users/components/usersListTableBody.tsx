@@ -1,6 +1,6 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { getUsersList } from "@/repository/user";
 import { ModalEditUser } from "./ModalEditUser";
+import { getUsersListDomain } from "@/domain/user";
 
 interface UsersListTableBodyProps {
   companyId: string;
@@ -11,7 +11,7 @@ export async function UsersListTableBody({
   branches,
   companyId,
 }: UsersListTableBodyProps) {
-  const users = await getUsersList(companyId);
+  const users = await getUsersListDomain(companyId);
 
   return (
     <TableBody>

@@ -109,6 +109,7 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
       id: true,
       name: true,
       branches: true,
+      password: true,
     },
     orderBy: {
       name: "asc",
@@ -123,6 +124,7 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
     lastName: user.name.split(" ").pop() || "",
     name: user.name,
     nameInitials: getNameInitials(user.name),
+    haveFirstAccess: !!user.password,
   }));
 }
 
@@ -140,21 +142,6 @@ export async function getUserWithPassword(email: string) {
   });
 
   return userDB;
-}
-
-export async function linkUserToBranch(userId: string, branchId: string) {
-  await dbClient.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      branches: {
-        connect: {
-          id: branchId,
-        },
-      },
-    },
-  });
 }
 
 export async function registerUser(
