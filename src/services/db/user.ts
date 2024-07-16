@@ -80,19 +80,32 @@ export async function getUserByEmail(email: string) {
   return userDB;
 }
 
-export async function getUserById(userId: string) {
+export async function getUserById(userId: string): Promise<UserI | null> {
   const user = await dbClient.user.findUnique({
     where: {
       id: userId,
     },
     select: {
+      branches: true,
       email: true,
       id: true,
       name: true,
+      password: true,
     },
   });
 
-  return user;
+  return (
+    user && {
+      branches: user.branches,
+      email: user.email,
+      firstName: user.name.split(" ")[0],
+      id: user.id,
+      lastName: user.name.split(" ").pop() || "",
+      name: user.name,
+      nameInitials: getNameInitials(user.name),
+      haveFirstAccess: !!user.password,
+    }
+  );
 }
 
 export async function getUsersList(companyId: string): Promise<UserI[]> {
@@ -148,8 +161,8 @@ export async function registerUser(
   name: string,
   email: string,
   branchesId: string[]
-): Promise<void> {
-  await dbClient.user.create({
+): Promise<UserI> {
+  const user = await dbClient.user.create({
     data: {
       branches: {
         connect: branchesId.map((branchId) => ({
@@ -159,7 +172,25 @@ export async function registerUser(
       email: email,
       name: name,
     },
+    select: {
+      branches: true,
+      email: true,
+      id: true,
+      name: true,
+      password: true,
+    },
   });
+
+  return {
+    branches: user.branches,
+    email: user.email,
+    firstName: user.name.split(" ")[0],
+    id: user.id,
+    lastName: user.name.split(" ").pop() || "",
+    name: user.name,
+    nameInitials: getNameInitials(user.name),
+    haveFirstAccess: !!user.password,
+  };
 }
 
 export async function updateUser(

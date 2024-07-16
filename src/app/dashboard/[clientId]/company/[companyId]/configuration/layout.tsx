@@ -5,7 +5,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import Link from "next/link";
 import { ReactNode } from "react";
 
 interface ConfigurationLayoutProps {

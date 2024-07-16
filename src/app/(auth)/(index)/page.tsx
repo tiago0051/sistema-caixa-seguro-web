@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { getUserClientsAndCompanies } from "@/repository/user";
+import { getUserClientsAndCompanies } from "@/services/db/user";
 import { Form } from "./components/form";
 
 export default async function IndexPage() {

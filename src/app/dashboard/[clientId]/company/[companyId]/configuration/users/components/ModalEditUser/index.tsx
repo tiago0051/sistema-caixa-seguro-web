@@ -19,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { updateUserDomain } from "@/domain/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,6 +27,10 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FiEdit, FiLoader } from "react-icons/fi";
 import { z } from "zod";
 import { TableBranches } from "./components/tableBranches";
+import {
+  sendEmailFirstAccessDomain,
+  updateUserDomain,
+} from "@/services/domain/user";
 
 interface ModalEditUserProps {
   branches: BranchI[];
@@ -100,6 +103,10 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
       });
     }
   };
+
+  async function sendEmailFirstAccess() {
+    await sendEmailFirstAccessDomain(user);
+  }
 
   useEffect(() => {
     if (!isOpen) form.reset();
@@ -188,7 +195,11 @@ export function ModalEditUser({ branches, user }: ModalEditUserProps) {
             <div className="flex justify-between">
               <SubmitButton />
               {!user.haveFirstAccess && (
-                <Button variant="link">
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => sendEmailFirstAccess()}
+                >
                   Reenviar e-mail de primeiro acesso
                 </Button>
               )}

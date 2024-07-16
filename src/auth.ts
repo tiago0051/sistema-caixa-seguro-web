@@ -1,6 +1,6 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { getUserWithPassword } from "./repository/user";
+import { getUserWithPassword } from "./services/db/user";
 import { ZodError, z } from "zod";
 import { compare, hash } from "bcryptjs";
 import { getNameInitials } from "./utils/stringFormat";

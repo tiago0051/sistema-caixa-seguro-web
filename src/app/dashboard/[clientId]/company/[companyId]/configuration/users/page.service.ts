@@ -1,5 +1,5 @@
 import { UsersListServiceData, UsersListServiceReturn } from "./page.interface";
-import { getUserBranchesList } from "@/repository/user";
+import { getUserBranchesList } from "@/services/db/user";
 import { auth } from "@/auth";
 
 export async function usersListService({

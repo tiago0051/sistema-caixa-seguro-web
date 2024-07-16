@@ -1,6 +1,6 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { ModalEditUser } from "./ModalEditUser";
-import { getUsersListDomain } from "@/domain/user";
+import { getUsersListDomain } from "@/services/domain/user";
 
 interface UsersListTableBodyProps {
   companyId: string;

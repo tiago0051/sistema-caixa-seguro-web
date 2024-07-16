@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { DashboardHeader } from "@/components/template/dashboardHeader";
-import { getClient } from "@/repository/client";
-import { getCompany } from "@/repository/company";
+import { getClient } from "@/services/db/client";
+import { getCompany } from "@/services/db/company";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 

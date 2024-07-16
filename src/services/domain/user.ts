@@ -6,7 +6,9 @@ import {
   getUsersList,
   registerUser,
   updateUser,
-} from "@/repository/user";
+} from "@/services/db/user";
+import { sendEmailService } from "../services/amazonSes";
+import { firstAccessEmailTemplate } from "../templates/email/firstAccesEmailTemplate";
 
 export async function registerUserDomain(
   name: string,
@@ -18,7 +20,10 @@ export async function registerUserDomain(
   if (userAlreadyExists) {
     return `Já existe um usuário com o e-mail '${email}'`;
   }
-  await registerUser(name, email, branchesId);
+
+  const user = await registerUser(name, email, branchesId);
+
+  await sendEmailFirstAccessDomain(user);
 }
 
 export async function updateUserDomain(
@@ -44,4 +49,12 @@ export async function getUsersListDomain(companyId: string) {
   const usersList = await getUsersList(companyId);
 
   return usersList;
+}
+
+export async function sendEmailFirstAccessDomain(user: UserI) {
+  const emailTo = user.email;
+  const body = firstAccessEmailTemplate(process.env.PUBLIC_URL!);
+  const subject = "Primeiro acesso";
+
+  await sendEmailService(emailTo, body, subject);
 }

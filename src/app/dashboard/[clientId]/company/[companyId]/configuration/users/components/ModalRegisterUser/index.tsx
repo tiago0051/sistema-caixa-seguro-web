@@ -19,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { registerUserDomain, updateUserDomain } from "@/domain/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,6 +27,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FiEdit, FiLoader } from "react-icons/fi";
 import { z } from "zod";
 import { TableBranches } from "./components/tableBranches";
+import { registerUserDomain } from "@/services/domain/user";
 
 interface ModalRegisterUserProps {
   branches: BranchI[];
