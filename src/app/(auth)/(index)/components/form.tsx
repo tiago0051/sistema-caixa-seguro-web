@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClientIL } from "../page.interface";
 import {
   Select,
@@ -19,6 +19,20 @@ export function Form({ clients }: { clients: ClientIL[] }) {
 
   const [selectedClient, setSelectedClient] = useState<ClientIL>();
   const [selectedCompany, setSelectedCompany] = useState<CompanyI>();
+
+  useEffect(() => {
+    if (clients.length === 1) {
+      const client = clients[0];
+
+      setSelectedClient(client);
+
+      if (client.companies.length === 1) {
+        const company = client.companies[0];
+
+        setSelectedCompany(company);
+      }
+    }
+  }, [clients]);
 
   return (
     <div className="grid gap-8">
@@ -53,6 +67,7 @@ export function Form({ clients }: { clients: ClientIL[] }) {
               )
             )
           }
+          value={selectedCompany?.id}
         >
           <SelectTrigger>
             <SelectValue placeholder="Selecione uma empresa" />

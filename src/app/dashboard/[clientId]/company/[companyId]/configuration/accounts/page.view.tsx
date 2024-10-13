@@ -8,11 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UsersListViewProps } from "./page.interface";
-import { UsersListTableBody } from "./components/usersListTableBody";
 import { Suspense } from "react";
-import { UsersListTableBodySkeleton } from "./components/usersListTableBodySkeleton";
-import { ModalRegisterUser } from "./components/ModalRegisterUser";
+import { AccountsListTableBodySkeleton } from "./components/accountsListTableBodySkeleton";
+import { AccountsListTableBody } from "./components/accountsListTableBody";
 import {
   Card,
   CardContent,
@@ -21,59 +19,52 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ModalRegisterAccounts } from "./components/modalRegisterAccounts";
 
-export function UsersListView({ branches, params }: UsersListViewProps) {
+export function AccountsView({ companyId }: AccountsViewProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Usuários</CardTitle>
+        <CardTitle>Contas do caixa</CardTitle>
         <CardDescription>
-          Lista de usuários vinculádos a empresas.
+          Lista de contas para lançamento de movimentações
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid sm:grid-cols-[350px_auto] gap-4">
           <div className="sm:border-r sm:border-separate gap-6 sm:pr-4 flex flex-col">
-            <h3 className="font-semibold">Pesquise pelo usuário</h3>
+            <h3 className="font-semibold">Pesquise pela conta</h3>
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label>Código</Label>
                 <Input />
               </div>
               <div className="grid gap-2">
-                <Label>Nome</Label>
+                <Label>Descrição</Label>
                 <Input />
               </div>
-              <div className="grid gap-2">
-                <Label>E-mail</Label>
-                <Input />
-              </div>
-              <Button variant={"outline"}>Filtrar</Button>
+              <Button variant="outline">Filtrar</Button>
             </div>
           </div>
           <div className="grid">
             <Table>
-              <TableCaption>Lista de Usuários.</TableCaption>
+              <TableCaption>Lista de contas.</TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Cod.</TableHead>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>E-mail</TableHead>
+                  <TableHead>Descrição</TableHead>
                   <TableHead> </TableHead>
                 </TableRow>
               </TableHeader>
-              <Suspense fallback={<UsersListTableBodySkeleton />}>
-                <UsersListTableBody
-                  branches={branches}
-                  companyId={params.companyId}
-                />
+              <Suspense fallback={<AccountsListTableBodySkeleton />}>
+                <AccountsListTableBody companyId={companyId} />
               </Suspense>
             </Table>
           </div>
         </div>
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
-        <ModalRegisterUser branches={branches} />
+        <ModalRegisterAccounts />
       </CardFooter>
     </Card>
   );

@@ -10,39 +10,52 @@ generator client {
 }
 
 model Client {
-  id        String    @id @default(uuid()) @map("id")
-  name      String    @map("name")
+  id        String   @id @default(uuid()) @map("id")
+  name      String   @map("name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
   companies Company[]
 
   @@map("client")
 }
 
 model Company {
-  id       String    @id @default(uuid()) @map("id")
-  name     String    @map("name")
-  clientId String    @map("client_id")
+  id        String   @id @default(uuid()) @map("id")
+  name      String   @map("name")
+  clientId  String   @map("client_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
   client   Client    @relation(fields: [clientId], references: [id])
   branches Branch[]
   storages Storage[]
   products Product[]
+  accounts Account[]
 
   @@map("company")
 }
 
 model Branch {
-  id        String  @id @default(uuid()) @map("id")
-  name      String  @map("name")
-  companyId String  @map("company_id")
-  company   Company @relation(fields: [companyId], references: [id])
-  users     User[]  @relation("UsersBranches")
+  id        String   @id @default(uuid()) @map("id")
+  name      String   @map("name")
+  companyId String   @map("company_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  company Company @relation(fields: [companyId], references: [id])
+  users   User[]  @relation("UsersBranches")
 
   @@map("branch")
 }
 
 model Storage {
-  id              String           @id @default(uuid()) @map("id")
-  name            String           @map("name")
-  companyId       String           @map("company_id")
+  id        String   @id @default(uuid()) @map("id")
+  name      String   @map("name")
+  companyId String   @map("company_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
   company         Company          @relation(fields: [companyId], references: [id])
   productStorages ProductStorage[]
 
@@ -50,21 +63,25 @@ model Storage {
 }
 
 model User {
-  id       String   @id @default(uuid()) @map("id")
-  email    String   @unique @map("email")
-  password String?  @map("password")
-  name     String   @map("name")
-  branches Branch[] @relation("UsersBranches")
+  id       String  @id @default(uuid()) @map("id")
+  email    String  @unique @map("email")
+  password String? @map("password")
+  name     String  @map("name")
+
+  branches     Branch[]      @relation("UsersBranches")
+  transactions Transaction[]
+  accounts     Account[]
 
   @@map("user")
 }
 
 model Product {
-  id              String           @id @default(uuid()) @map("id")
-  name            String           @map("name")
-  costPrice       Float            @map("cost_price")
-  salePrice       Float            @map("sale_price")
-  companyId       String           @map("company_id")
+  id        String  @id @default(uuid()) @map("id")
+  name      String  @map("name")
+  costPrice Decimal @map("cost_price") @db.Money
+  salePrice Decimal @map("sale_price") @db.Money
+  companyId String  @map("company_id")
+
   company         Company          @relation(fields: [companyId], references: [id])
   productStorages ProductStorage[]
 
@@ -76,10 +93,44 @@ model ProductStorage {
   storageId String   @map("storage_id")
   quantity  Int      @map("quantity")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  product   Product  @relation(fields: [productId], references: [id])
-  storage   Storage  @relation(fields: [storageId], references: [id])
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id])
+  storage Storage @relation(fields: [storageId], references: [id])
 
   @@id([productId, storageId])
   @@map("product_storage")
+}
+
+model Transaction {
+  id           String   @id @default(uuid())
+  amount       Decimal  @db.Money
+  type         Int
+  resultAmount Decimal  @map("result_amount") @db.Money
+  canceled     Boolean  @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @map("user_id")
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String  @map("account_id")
+
+  @@map("transaction")
+}
+
+model Account {
+  id          String   @id @default(uuid())
+  type        Int
+  description String
+  inactive    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  company      Company       @relation(fields: [companyId], references: [id])
+  companyId    String        @map("company_id")
+  transactions Transaction[]
+  users        User[]
+
+  @@map("account")
 }

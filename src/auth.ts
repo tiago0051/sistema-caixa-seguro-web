@@ -55,6 +55,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!user)
             throw new CredentialsSignin("E-mail e/ou senha incorreto(s)");
 
+          if (!user.password)
+            throw new CredentialsSignin("O usuário não fez o primeiro acesso");
+
           const isValidPassword = await compare(password, user.password);
 
           if (!isValidPassword)
