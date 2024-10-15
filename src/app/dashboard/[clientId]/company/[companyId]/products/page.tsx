@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getProductList } from "@/services/domain/product";
 import Link from "next/link";
 
 interface ProductsPageProps {
@@ -20,65 +21,8 @@ interface ProductsPageProps {
   };
 }
 
-export default function ProductsPage({ params }: ProductsPageProps) {
-  let products = [
-    {
-      id: 1,
-      name: "Sofá de Couro",
-      category: "Móveis",
-      price: 1599.99,
-      amountPaid: 799.99,
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Cadeira de Jantar",
-      category: "Móveis",
-      price: 199.99,
-      amountPaid: 99.99,
-      quantity: 4,
-    },
-    {
-      id: 3,
-      name: "Mesa de Centro",
-      category: "Móveis",
-      price: 299.99,
-      amountPaid: 149.99,
-      quantity: 1,
-    },
-    {
-      id: 4,
-      name: "Estante de Livros",
-      category: "Móveis",
-      price: 499.99,
-      amountPaid: 249.99,
-      quantity: 3,
-    },
-    {
-      id: 5,
-      name: "Cama King Size",
-      category: "Móveis",
-      price: 799.99,
-      amountPaid: 399.99,
-      quantity: 1,
-    },
-    {
-      id: 6,
-      name: "Guarda-Roupa Espelhado",
-      category: "Móveis",
-      price: 1299.99,
-      amountPaid: 649.99,
-      quantity: 2,
-    },
-    {
-      id: 7,
-      name: "Mesa de Escritório",
-      category: "Móveis",
-      price: 349.99,
-      amountPaid: 174.99,
-      quantity: 1,
-    },
-  ];
+export default async function ProductsPage({ params }: ProductsPageProps) {
+  const productsList = await getProductList(params.companyId);
 
   return (
     <div className="grid gap-8">
@@ -125,34 +69,29 @@ export default function ProductsPage({ params }: ProductsPageProps) {
                 </TableHead>
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
-                <TableHead>Categoria</TableHead>
                 <TableHead className="text-right">Valor venda</TableHead>
-                <TableHead className="text-right">Valor custo</TableHead>
                 <TableHead className="text-right">Quantidade</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((p) => (
-                <TableRow key={p.id}>
+              {productsList.map((product) => (
+                <TableRow key={product.id}>
                   <TableCell className="font-medium">
                     <Checkbox />
                   </TableCell>
-                  <TableCell className="font-medium">#{p.id}</TableCell>
-                  <TableCell>{p.name}</TableCell>
-                  <TableCell>{p.category}</TableCell>
+                  <TableCell className="font-medium">
+                    #{product.id.split("-")[0]}
+                  </TableCell>
+                  <TableCell>{product.name}</TableCell>
                   <TableCell className="text-right">
-                    {p.price.toLocaleString("pt-br", {
+                    {product.salePrice.toLocaleString("pt-br", {
                       style: "currency",
                       currency: "BRL",
                     })}
                   </TableCell>
                   <TableCell className="text-right">
-                    {p.amountPaid.toLocaleString("pt-br", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
+                    {product.quantity}
                   </TableCell>
-                  <TableCell className="text-right">{p.quantity}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
