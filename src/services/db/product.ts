@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { dbClient } from "./prismaClient";
 
 export async function createProductDB(
@@ -55,17 +56,17 @@ export async function getProductListDB(companyId: string) {
 }
 
 function productMap(productDB: {
-  costPrice: number;
+  costPrice: Decimal;
   id: string;
   name: string;
-  salePrice: number;
+  salePrice: Decimal;
   productStorages: { quantity: number }[];
 }) {
   return {
-    costPrice: productDB.costPrice,
+    costPrice: productDB.costPrice.toNumber(),
     id: productDB.id,
     name: productDB.name,
-    salePrice: productDB.salePrice,
+    salePrice: productDB.salePrice.toNumber(),
     quantity: productDB.productStorages
       .map((productStorage) => productStorage.quantity)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
