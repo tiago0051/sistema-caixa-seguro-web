@@ -3,12 +3,12 @@ const fs = require("fs");
 const { Pool } = require("pg");
 const { v4: uuidv4 } = require("uuid");
 
-async function loadGruposCSV() {
-  const gruposCSV = "CDGRUPOS.csv";
+const companyId = "da0fa60d-907a-4cde-bd48-2e88946eda68";
+const gruposCSV = "CDGRUPOS.csv";
+const produtosCSV = "PRODUTOS.csv";
 
-  const grupos = [];
-
-  return new Promise((resolve) => {
+async function loadGruposCSV(callback) {
+  return new Promise((resolve, reject) => {
     // Ler o arquivo CSV
     fs.createReadStream(gruposCSV)
 
@@ -19,29 +19,35 @@ async function loadGruposCSV() {
 
       // Acionar o evento data quando ler uma linha e executar a função enviando os dados como parâmetro
       .on("data", async (dadosLinha) => {
-        grupos.push(dadosLinha);
+        await callback(dadosLinha);
       })
-      .on("end", () => resolve(grupos));
+      .on("end", () => resolve())
+      .on("error", (error) => reject(error));
   });
 }
 
 async function loadCSV(callback) {
-  const produtosCSV = "PRODUTOS.csv";
+  return new Promise((resolve, reject) => {
+    // Ler o arquivo CSV
+    fs.createReadStream(produtosCSV)
 
-  // Ler o arquivo CSV
-  fs.createReadStream(produtosCSV)
+      // pipe - conectar fluxos de leitura e escrita, sem armazenar os dados intermediários em memória
+      // columns: true - Primeira linha do arquivo CSV seja tratada como cabeçalho, o nome do cabeçalho corresponde o nome da coluna no banco de dados
+      // Delimitador é ; (ponto e vírgula)
+      .pipe(csv.parse({ columns: true, delimiter: ";" }))
 
-    // pipe - conectar fluxos de leitura e escrita, sem armazenar os dados intermediários em memória
-    // columns: true - Primeira linha do arquivo CSV seja tratada como cabeçalho, o nome do cabeçalho corresponde o nome da coluna no banco de dados
-    // Delimitador é ; (ponto e vírgula)
-    .pipe(csv.parse({ columns: true, delimiter: ";" }))
+      // Acionar o evento data quando ler uma linha e executar a função enviando os dados como parâmetro
+      .on("data", async (dadosLinha) => {
+        await callback(dadosLinha);
+      })
+      .on("end", () => resolve())
+      .on("error", (error) => reject(error));
+  });
+}
 
-    // Acionar o evento data quando ler uma linha e executar a função enviando os dados como parâmetro
-    .on("data", async (dadosLinha) => {
-      await callback(dadosLinha);
-    });
-
-  console.log("Importação concluída.");
+async function resetDB(pg) {
+  await pg.query("DELETE FROM product");
+  await pg.query("DELETE FROM supplier");
 }
 
 async function connect() {
@@ -66,32 +72,46 @@ async function connect() {
 
 connect()
   .then(async (pg) => {
-    const grupos = await loadGruposCSV();
+    await resetDB(pg);
 
-    const gruposPromise = grupos.map(async (grupo) => {
+    const grupos = [];
+
+    await loadGruposCSV(async (dadosLinha) => {
       const id = uuidv4();
+
+      grupos.push({
+        id,
+        codGru: dadosLinha.CodGru,
+      });
+
       await pg.query("INSERT INTO supplier (id, name) VALUES ($1, $2)", [
         id,
-        grupo.DesGru,
+        dadosLinha.DesGru,
       ]);
-
-      return (await pg.query("SELECT * FROM supplier WHERE id=$1", [id])).rows;
     });
 
-    const gruposSalved = await Promise.all(gruposPromise);
+    let productsLength = 0;
 
-    console.log(gruposSalved);
+    await loadCSV(async (dadosLinha) => {
+      const id = uuidv4();
 
-    // loadCSV(async (dadosLinha) => {
-    //   const objeto = {
-    //     codPro: dadosLinha.CodPro,
-    //     codGru: dadosLinha.CodGru,
-    //     nome: dadosLinha.DesPro,
-    //   };
+      productsLength++;
 
-    //   console.log(objeto);
-    // });
+      await pg.query(
+        "INSERT INTO product (id, name, cost_price, sale_price, company_id, supplier_id) VALUES ($1, $2, $3, $4, $5, $6)",
+        [
+          id,
+          dadosLinha.DesPro,
+          dadosLinha.PcoCus,
+          dadosLinha.PcoVen,
+          companyId,
+          grupos.find((grupo) => grupo.codGru === dadosLinha.CodGru).id,
+        ]
+      );
+    });
 
-    // const res = await pg.query("SELECT * FROM product");
+    console.log(
+      `total categorias: ${grupos.length}, total produtos: ${productsLength}`
+    );
   })
   .catch((error) => console.log(error));

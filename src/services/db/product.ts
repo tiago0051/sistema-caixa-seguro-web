@@ -23,6 +23,7 @@ export async function createProductDB(
       id: true,
       name: true,
       salePrice: true,
+      supplier: true,
       productStorages: {
         select: {
           quantity: true,
@@ -34,8 +35,17 @@ export async function createProductDB(
   return productMap(productDB);
 }
 
-export async function getProductListDB(companyId: string) {
+export async function getProductListDB(
+  companyId: string,
+  take: number,
+  page: number
+) {
   const productsListDB = await dbClient.product.findMany({
+    take,
+    skip: page * take,
+    orderBy: {
+      name: "asc",
+    },
     where: {
       companyId,
     },
@@ -44,6 +54,7 @@ export async function getProductListDB(companyId: string) {
       id: true,
       name: true,
       salePrice: true,
+      supplier: true,
       productStorages: {
         select: {
           quantity: true,
@@ -60,6 +71,10 @@ function productMap(productDB: {
   id: string;
   name: string;
   salePrice: Decimal;
+  supplier: {
+    id: string;
+    name: string;
+  } | null;
   productStorages: { quantity: number }[];
 }) {
   return {
@@ -67,6 +82,7 @@ function productMap(productDB: {
     id: productDB.id,
     name: productDB.name,
     salePrice: productDB.salePrice.toNumber(),
+    supplierName: productDB.supplier?.name ?? null,
     quantity: productDB.productStorages
       .map((productStorage) => productStorage.quantity)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0),

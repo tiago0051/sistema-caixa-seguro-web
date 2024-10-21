@@ -22,7 +22,9 @@ interface ProductsPageProps {
 }
 
 export default async function ProductsPage({ params }: ProductsPageProps) {
-  const productsList = await getProductList(params.companyId);
+  const productsList = await getProductList({
+    companyId: params.companyId,
+  });
 
   return (
     <div className="grid gap-8">
@@ -69,6 +71,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
                 </TableHead>
                 <TableHead className="w-[100px]">Cod.</TableHead>
                 <TableHead>Nome</TableHead>
+                <TableHead>Fornecedor</TableHead>
                 <TableHead className="text-right">Valor venda</TableHead>
                 <TableHead className="text-right">Quantidade</TableHead>
               </TableRow>
@@ -83,6 +86,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
                     #{product.id.split("-")[0]}
                   </TableCell>
                   <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.supplierName}</TableCell>
                   <TableCell className="text-right">
                     {product.salePrice.toLocaleString("pt-br", {
                       style: "currency",

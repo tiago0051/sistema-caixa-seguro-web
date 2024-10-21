@@ -13,8 +13,16 @@ export async function createProduct(
   return product;
 }
 
-export async function getProductList(companyId: string) {
-  const productsList = await getProductListDB(companyId);
+export async function getProductList({
+  companyId,
+  page = 0,
+  take = 10,
+}: {
+  companyId: string;
+  page?: number;
+  take?: number;
+}) {
+  const productsList = await getProductListDB(companyId, take, page);
 
   return productsList;
 }

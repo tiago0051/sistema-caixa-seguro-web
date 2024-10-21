@@ -84,8 +84,8 @@ model Product {
 
   company         Company          @relation(fields: [companyId], references: [id])
   productStorages ProductStorage[]
-  Supplier        Supplier?        @relation(fields: [supplierId], references: [id])
-  supplierId      String?          @map("suplier_id")
+  supplier        Supplier?        @relation(fields: [supplierId], references: [id])
+  supplierId      String?          @map("supplier_id")
 
   @@map("product")
 }
