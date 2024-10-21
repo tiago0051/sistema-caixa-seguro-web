@@ -84,6 +84,8 @@ model Product {
 
   company         Company          @relation(fields: [companyId], references: [id])
   productStorages ProductStorage[]
+  Supplier        Supplier?        @relation(fields: [supplierId], references: [id])
+  supplierId      String?          @map("suplier_id")
 
   @@map("product")
 }
@@ -133,4 +135,12 @@ model Account {
   users        User[]
 
   @@map("account")
+}
+
+model Supplier {
+  id       String    @id @default(uuid())
+  name     String
+  products Product[]
+
+  @@map("supplier")
 }
