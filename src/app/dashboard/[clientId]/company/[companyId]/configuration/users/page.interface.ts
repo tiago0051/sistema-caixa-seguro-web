@@ -1,5 +1,3 @@
-import { BranchI } from "@/types/branch/branch";
-
 export interface UsersListServiceData {
   params: { companyId: string };
 }

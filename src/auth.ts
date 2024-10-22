@@ -48,7 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             credentials
           );
 
-          console.log(await hash(password, 10));
+          // console.log(await hash(password, 10));
 
           const user = await getUserWithPassword(email);
 
