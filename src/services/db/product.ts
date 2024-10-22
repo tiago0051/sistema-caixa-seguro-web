@@ -35,11 +35,21 @@ export async function createProductDB(
   return productMap(productDB);
 }
 
-export async function getProductListDB(
-  companyId: string,
-  take: number,
-  page: number
-) {
+export async function getProductListDB({
+  companyId,
+  page = 0,
+  searchParams,
+  take = 10,
+}: {
+  companyId: string;
+  page?: number;
+  searchParams: {
+    productCod?: string;
+    productName?: string;
+    supplierName?: string;
+  };
+  take?: number;
+}) {
   const productsListDB = await dbClient.product.findMany({
     take,
     skip: page * take,
@@ -47,7 +57,34 @@ export async function getProductListDB(
       name: "asc",
     },
     where: {
-      companyId,
+      AND: [
+        { companyId },
+        {
+          AND: [
+            {
+              id: {
+                startsWith: searchParams.productCod,
+              },
+            },
+            {
+              name: {
+                contains: searchParams.productName,
+                mode: "insensitive",
+              },
+            },
+            {
+              supplier: searchParams.supplierName
+                ? {
+                    name: {
+                      contains: searchParams.supplierName,
+                      mode: "insensitive",
+                    },
+                  }
+                : undefined,
+            },
+          ],
+        },
+      ],
     },
     select: {
       costPrice: true,
@@ -64,6 +101,53 @@ export async function getProductListDB(
   });
 
   return productsListDB.map((productDB) => productMap(productDB));
+}
+
+export async function getProductListCountDB({
+  companyId,
+  searchParams,
+}: {
+  companyId: string;
+  searchParams: {
+    productCod?: string;
+    productName?: string;
+    supplierName?: string;
+  };
+}) {
+  const productsListCountDB = await dbClient.product.count({
+    where: {
+      AND: [
+        { companyId },
+        {
+          AND: [
+            {
+              id: {
+                startsWith: searchParams.productCod,
+              },
+            },
+            {
+              name: {
+                contains: searchParams.productName,
+                mode: "insensitive",
+              },
+            },
+            {
+              supplier: searchParams.supplierName
+                ? {
+                    name: {
+                      contains: searchParams.supplierName,
+                      mode: "insensitive",
+                    },
+                  }
+                : undefined,
+            },
+          ],
+        },
+      ],
+    },
+  });
+
+  return productsListCountDB;
 }
 
 function productMap(productDB: {

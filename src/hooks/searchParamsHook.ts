@@ -6,7 +6,12 @@ export function createQueryString(
   searchParams?: ReadonlyURLSearchParams
 ) {
   const params = new URLSearchParams(searchParams?.toString());
-  params.set(name, value);
 
-  return params.toString();
+  if (value) {
+    params.set(name, value);
+  } else {
+    params.delete(name);
+  }
+
+  return params;
 }
