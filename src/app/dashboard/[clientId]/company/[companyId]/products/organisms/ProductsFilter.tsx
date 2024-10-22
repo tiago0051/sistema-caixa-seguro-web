@@ -2,54 +2,41 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createQueryString } from "@/hooks/searchParamsHook";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, FC } from "react";
+import { FC, useEffect, useState } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 export const ProductsFilter: FC = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const productCod = searchParams.get("productCod") || "";
-  const productName = searchParams.get("productName") || "";
-  const supplierName = searchParams.get("supplierName") || "";
+  const [productCod, setProductCod] = useState("");
+  const [productName, setProductName] = useState("");
+  const [supplierName, setSupplierName] = useState("");
 
-  function handleChangeProductId(event: ChangeEvent<HTMLInputElement>) {
-    const searchParamsQuery = createQueryString(
-      "productCod",
-      event.currentTarget.value,
-      searchParams
-    );
+  function filtrarLista() {
+    const urlSearchParams = new URLSearchParams(searchParams.toString());
 
-    searchParamsQuery.delete("page");
+    urlSearchParams.delete("productCod");
+    urlSearchParams.delete("productName");
+    urlSearchParams.delete("supplierName");
+    urlSearchParams.delete("page");
 
-    router.push(`${pathname}?${searchParamsQuery.toString()}`);
+    if (productCod) urlSearchParams.append("productCod", productCod);
+    if (productName) urlSearchParams.append("productName", productName);
+    if (supplierName) urlSearchParams.append("supplierName", supplierName);
+
+    router.push(`${pathname}?${urlSearchParams.toString()}`);
   }
 
-  function handleProductName(event: ChangeEvent<HTMLInputElement>) {
-    const searchParamsQuery = createQueryString(
-      "productName",
-      event.currentTarget.value,
-      searchParams
-    );
+  const filtrarListaDebounced = useDebounceCallback(filtrarLista, 500);
 
-    searchParamsQuery.delete("page");
+  useEffect(() => {
+    filtrarListaDebounced();
 
-    router.push(`${pathname}?${searchParamsQuery.toString()}`);
-  }
-
-  function handleSupplierName(event: ChangeEvent<HTMLInputElement>) {
-    const searchParamsQuery = createQueryString(
-      "supplierName",
-      event.currentTarget.value,
-      searchParams
-    );
-
-    searchParamsQuery.delete("page");
-
-    router.push(`${pathname}?${searchParamsQuery.toString()}`);
-  }
+    return () => filtrarListaDebounced.cancel();
+  }, [filtrarListaDebounced, productCod, productName, supplierName]);
 
   return (
     <div className="md:border-r border-separate md:mr-4 grid gap-6 md:pr-4 mb-8 md:mb-0">
@@ -58,22 +45,22 @@ export const ProductsFilter: FC = () => {
         <div className="grid gap-2">
           <Label>Código</Label>
           <Input
+            onChange={(event) => setProductCod(event.currentTarget.value)}
             value={productCod}
-            onChange={(event) => handleChangeProductId(event)}
           />
         </div>
         <div className="grid gap-2">
           <Label>Nome do produto</Label>
           <Input
+            onChange={(event) => setProductName(event.currentTarget.value)}
             value={productName}
-            onChange={(event) => handleProductName(event)}
           />
         </div>
         <div className="grid gap-2">
           <Label>Nome do fabricante</Label>
           <Input
+            onChange={(event) => setSupplierName(event.currentTarget.value)}
             value={supplierName}
-            onChange={(event) => handleSupplierName(event)}
           />
         </div>
       </div>
