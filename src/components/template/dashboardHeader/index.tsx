@@ -1,6 +1,6 @@
 "use client";
+
 import { authenticationSignOutAction } from "@/app/actions/services/authAction";
-import { signOut } from "@/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { ClientI } from "@/types/client/client";
 import { CompanyI } from "@/types/company/company";
-import { UserI } from "@/types/user/user";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

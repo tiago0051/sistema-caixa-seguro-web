@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -33,7 +33,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               />
             </div>
 
-            {children}
+            <Suspense>{children}</Suspense>
           </div>
           <div></div>
         </div>

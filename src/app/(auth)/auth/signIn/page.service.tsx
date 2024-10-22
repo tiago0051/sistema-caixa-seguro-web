@@ -1,3 +1,5 @@
+"use client";
+
 import { SignInDTO } from "./page.dto";
 import { useToast } from "@/components/ui/use-toast";
 import { authenticateAction } from "@/app/actions/services/authAction";
