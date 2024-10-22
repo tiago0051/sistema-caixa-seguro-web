@@ -1,3 +1,4 @@
+require("dotenv").config();
 const csv = require("csv");
 const fs = require("fs");
 const { Pool } = require("pg");
@@ -54,7 +55,7 @@ async function connect() {
   if (global.connection) return global.connection.connect();
 
   const pool = new Pool({
-    connectionString: "postgresql://postgres:example@localhost:5432/scs-dev",
+    connectionString: process.env.POSTGRESQL_URL,
   });
 
   //apenas testando a conexão
