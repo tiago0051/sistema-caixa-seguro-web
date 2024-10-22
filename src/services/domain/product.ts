@@ -1,6 +1,10 @@
 "use server";
 
-import { createProductDB, getProductListDB } from "../db/product";
+import {
+  createProductDB,
+  getProductListCountDB,
+  getProductListDB,
+} from "../db/product";
 
 export async function createProduct(
   companyId: string,
@@ -16,13 +20,32 @@ export async function createProduct(
 export async function getProductList({
   companyId,
   page = 0,
+  searchParams,
   take = 10,
 }: {
   companyId: string;
   page?: number;
+  searchParams: {
+    productCod?: string;
+    productName?: string;
+    supplierName?: string;
+  };
   take?: number;
 }) {
-  const productsList = await getProductListDB(companyId, take, page);
+  const productsList = await getProductListDB({
+    companyId,
+    take,
+    searchParams,
+    page,
+  });
 
-  return productsList;
+  const productsListCount = await getProductListCountDB({
+    companyId,
+    searchParams,
+  });
+
+  return {
+    items: productsList,
+    totalPages: Math.ceil(productsListCount / take),
+  };
 }

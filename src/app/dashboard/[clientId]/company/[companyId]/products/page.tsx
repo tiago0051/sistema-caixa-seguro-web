@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -13,18 +11,28 @@ import {
 } from "@/components/ui/table";
 import { getProductList } from "@/services/domain/product";
 import Link from "next/link";
+import { ProductsFilter } from "./organisms/ProductsFilter";
+import { PaginationOrganism } from "@/components/organisms/Pagination";
 
 interface ProductsPageProps {
   params: {
     clientId: string;
     companyId: string;
   };
+  searchParams: Record<string, string>;
 }
 
-export default async function ProductsPage({ params }: ProductsPageProps) {
+export default async function ProductsPage({
+  params,
+  searchParams,
+}: Readonly<ProductsPageProps>) {
   const productsList = await getProductList({
     companyId: params.companyId,
+    searchParams,
+    page: searchParams.page ? Number(searchParams.page) : 0,
   });
+
+  const { totalPages, items } = productsList;
 
   return (
     <div className="grid gap-8">
@@ -38,30 +46,10 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-[350px_auto]">
-        <div className="border-r border-separate mr-4 grid gap-6 pr-4">
-          <h3 className="font-semibold">Pesquise pelo produto</h3>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label>Código</Label>
-              <Input />
-            </div>
-            <div className="grid gap-2">
-              <Label>Código de barras</Label>
-              <Input />
-            </div>
-            <div className="grid gap-2">
-              <Label>Nome do produto</Label>
-              <Input />
-            </div>
-            <div className="grid gap-2">
-              <Label>Nome do fabricante</Label>
-              <Input />
-            </div>
-            <Button>Filtrar</Button>
-          </div>
-        </div>
-        <div>
+      <div className="grid grid-cols-[350px_auto] items-start">
+        <ProductsFilter />
+
+        <div className="grid gap-4">
           <Table>
             <TableCaption>Lista de produtos.</TableCaption>
             <TableHeader>
@@ -77,7 +65,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {productsList.map((product) => (
+              {items.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell className="font-medium">
                     <Checkbox />
@@ -100,6 +88,11 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
               ))}
             </TableBody>
           </Table>
+
+          <PaginationOrganism
+            searchParams={searchParams}
+            totalPages={totalPages}
+          />
         </div>
       </div>
     </div>
