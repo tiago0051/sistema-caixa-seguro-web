@@ -52,7 +52,7 @@ export const ProductsFilter: FC = () => {
   }
 
   return (
-    <div className="border-r border-separate mr-4 grid gap-6 pr-4">
+    <div className="md:border-r border-separate md:mr-4 grid gap-6 md:pr-4 mb-8 md:mb-0">
       <h3 className="font-semibold">Pesquise pelo produto</h3>
       <div className="grid gap-4">
         <div className="grid gap-2">

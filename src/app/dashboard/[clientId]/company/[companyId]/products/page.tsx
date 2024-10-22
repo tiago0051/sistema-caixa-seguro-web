@@ -36,8 +36,10 @@ export default async function ProductsPage({
 
   return (
     <div className="grid gap-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Produtos</h1>
+      <div className="md:flex-row justify-between flex flex-col gap-6 items-center">
+        <h1 className="text-3xl font-bold text-center md:text-left">
+          Produtos
+        </h1>
         <div>
           <Link
             href={`/dashboard/${params.clientId}/company/${params.companyId}/products/0`}
@@ -46,10 +48,10 @@ export default async function ProductsPage({
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-[350px_auto] items-start">
+      <div className="grid md:grid-cols-[350px_auto] items-start">
         <ProductsFilter />
 
-        <div className="grid gap-4">
+        <div className="grid gap-4 whitespace-nowrap">
           <Table>
             <TableCaption>Lista de produtos.</TableCaption>
             <TableHeader>
