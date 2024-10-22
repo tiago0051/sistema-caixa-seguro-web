@@ -85,7 +85,7 @@ export function Form({ clients }: { clients: ClientIL[] }) {
         disabled={!selectedCompany}
         onClick={() =>
           router.push(
-            `/dashboard/${selectedClient?.id}/company/${selectedCompany?.id}/counter`
+            `/dashboard/${selectedClient?.id}/company/${selectedCompany?.id}/products`
           )
         }
       >
