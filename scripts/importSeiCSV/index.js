@@ -4,7 +4,7 @@ const fs = require("fs");
 const { Pool } = require("pg");
 const { v4: uuidv4 } = require("uuid");
 
-const companyId = "da0fa60d-907a-4cde-bd48-2e88946eda68";
+const companyId = process.env.COMPANY_ID;
 const gruposCSV = "CDGRUPOS.csv";
 const produtosCSV = "PRODUTOS.csv";
 

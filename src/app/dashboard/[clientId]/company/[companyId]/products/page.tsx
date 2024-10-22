@@ -89,10 +89,12 @@ export default async function ProductsPage({
             </TableBody>
           </Table>
 
-          <PaginationOrganism
-            searchParams={searchParams}
-            totalPages={totalPages}
-          />
+          {totalPages > 1 && (
+            <PaginationOrganism
+              searchParams={searchParams}
+              totalPages={totalPages}
+            />
+          )}
         </div>
       </div>
     </div>
