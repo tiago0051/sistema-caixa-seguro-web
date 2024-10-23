@@ -142,13 +142,13 @@ export async function getProductListCountDB({
                 mode: "insensitive",
               },
             },
-            // {
-            //   supplier: searchParams.supplierId
-            //     ? {
-            //         id: searchParams.supplierId,
-            //       }
-            //     : undefined,
-            // },
+            {
+              supplier: searchParams.supplierId
+                ? {
+                    id: searchParams.supplierId,
+                  }
+                : undefined,
+            },
           ],
         },
       ],
