@@ -38,9 +38,6 @@ export async function ProductsListTableOrganism({
         <TableCaption>Lista de produtos.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px]">
-              <Checkbox />
-            </TableHead>
             <TableHead className="w-[100px]">Cod.</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Fornecedor</TableHead>
@@ -52,9 +49,6 @@ export async function ProductsListTableOrganism({
         <TableBody>
           {items.map((product) => (
             <TableRow key={product.id}>
-              <TableCell className="font-medium">
-                <Checkbox />
-              </TableCell>
               <TableCell className="font-medium">
                 #{product.id.split("-")[0]}
               </TableCell>

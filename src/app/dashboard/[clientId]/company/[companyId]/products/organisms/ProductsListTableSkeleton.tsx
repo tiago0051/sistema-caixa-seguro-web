@@ -17,9 +17,6 @@ export const ProductsListTableSkeletonOrganism: FC = async () => {
         <TableCaption>Lista de produtos.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px]">
-              <Checkbox />
-            </TableHead>
             <TableHead className="w-[100px]">Cod.</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Fornecedor</TableHead>
@@ -34,16 +31,7 @@ export const ProductsListTableSkeletonOrganism: FC = async () => {
               <TableCell colSpan={2}>
                 <Skeleton className="h-5 w-full" />
               </TableCell>
-              <TableCell colSpan={1}>
-                <Skeleton className="h-5 w-full" />
-              </TableCell>
-              <TableCell colSpan={1}>
-                <Skeleton className="h-5 w-full" />
-              </TableCell>
-              <TableCell colSpan={1}>
-                <Skeleton className="h-5 w-full" />
-              </TableCell>
-              <TableCell colSpan={1}>
+              <TableCell colSpan={3}>
                 <Skeleton className="h-5 w-full" />
               </TableCell>
             </TableRow>

@@ -5,18 +5,23 @@ import { ProductsListTableOrganism } from "./organisms/ProductsListTable";
 import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListTableSkeleton";
 import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
 
+type SearchParams = Promise<Record<string, string>>;
+
 interface ProductsPageProps {
   params: {
     clientId: string;
     companyId: string;
   };
-  searchParams: Record<string, string>;
+  searchParams: SearchParams;
 }
 
-export default function ProductsPage({
+export default async function ProductsPage({
   params,
   searchParams,
 }: Readonly<ProductsPageProps>) {
+  const { clientId, companyId } = await params;
+  const searchParamsStorage = await searchParams;
+
   return (
     <div className="grid gap-8">
       <div className="md:flex-row justify-between flex flex-col gap-6 items-center">
@@ -24,9 +29,7 @@ export default function ProductsPage({
           Produtos
         </h1>
         <div>
-          <Link
-            href={`/dashboard/${params.clientId}/company/${params.companyId}/products/0`}
-          >
+          <Link href={`/dashboard/${clientId}/company/${companyId}/products/0`}>
             <Button>Adicionar produto</Button>
           </Link>
         </div>
@@ -35,12 +38,12 @@ export default function ProductsPage({
         <ProductsFilterOrganism />
 
         <Suspense
-          key={new URLSearchParams(searchParams).toString()}
+          key={new URLSearchParams(searchParamsStorage).toString()}
           fallback={<ProductsListTableSkeletonOrganism />}
         >
           <ProductsListTableOrganism
-            params={params}
-            searchParams={searchParams}
+            params={{ clientId, companyId }}
+            searchParams={searchParamsStorage}
           />
         </Suspense>
       </div>
