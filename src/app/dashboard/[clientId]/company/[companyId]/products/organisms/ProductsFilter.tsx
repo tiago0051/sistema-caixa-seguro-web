@@ -73,7 +73,7 @@ export const ProductsFilterOrganism: FC<ProductsFilterOrganismProps> = ({
 
           <ComboboxCellule.Root
             trigger={
-              <ComboboxCellule.Trigger>
+              <ComboboxCellule.Trigger placeholder="Selecione o fornecedor">
                 {supplierSelected && (
                   <>
                     {supplierSelected.name}
@@ -83,6 +83,7 @@ export const ProductsFilterOrganism: FC<ProductsFilterOrganismProps> = ({
               </ComboboxCellule.Trigger>
             }
             searchEmpty="Fornecedor não encontrado"
+            searchPlaceholder="Pesquise pelo fornecedor"
             selectClean={() => setSupplierId("")}
           >
             {suppliersList.map((supplier) => (

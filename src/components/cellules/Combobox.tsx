@@ -31,14 +31,18 @@ const ComboboxContext = createContext({} as ComboboxContextProps);
 
 interface ComboboxTriggerProps {
   children?: ReactNode;
+  placeholder: string;
 }
 
-const ComboboxTrigger: FC<ComboboxTriggerProps> = ({ children }) => {
+const ComboboxTrigger: FC<ComboboxTriggerProps> = ({
+  children,
+  placeholder,
+}) => {
   const { triggerRef } = useContext(ComboboxContext);
   return (
     <PopoverTrigger asChild ref={triggerRef}>
       <Button variant="outline" role="combobox" className="justify-between">
-        {children ? children : "Selecionar cliente..."}
+        {children ? children : placeholder}
         <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
@@ -104,6 +108,7 @@ interface ComboboxProps {
   trigger: ReactElement<typeof ComboboxTrigger>;
   children: ReactElement<typeof ComboboxItem>[];
   searchEmpty: string;
+  searchPlaceholder: string;
   selectClean?: () => void;
 }
 
@@ -111,6 +116,7 @@ const Combobox: FC<ComboboxProps> = ({
   children,
   trigger,
   searchEmpty,
+  searchPlaceholder,
   selectClean,
 }) => {
   const popoverTriggerRef = useRef<HTMLButtonElement>(null);
@@ -132,7 +138,7 @@ const Combobox: FC<ComboboxProps> = ({
         <PopoverContent className="p-0 w-full">
           <ComboboxContent>
             <Command>
-              <CommandInput placeholder="Buscar cliente..." className="h-9" />
+              <CommandInput placeholder={searchPlaceholder} className="h-9" />
               <CommandEmpty>{searchEmpty}</CommandEmpty>
               <CommandList>
                 <CommandGroup>{children}</CommandGroup>

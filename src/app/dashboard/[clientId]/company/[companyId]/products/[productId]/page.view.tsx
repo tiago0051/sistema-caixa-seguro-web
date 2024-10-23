@@ -79,7 +79,7 @@ export function RegisterProductView({
                   <FormControl>
                     <ComboboxCellule.Root
                       trigger={
-                        <ComboboxCellule.Trigger>
+                        <ComboboxCellule.Trigger placeholder="Selecione o fornecedor">
                           {
                             suppliersList.find(
                               (supplier) => supplier.id === field.value
@@ -88,6 +88,7 @@ export function RegisterProductView({
                         </ComboboxCellule.Trigger>
                       }
                       searchEmpty="Fornecedor não encontrado"
+                      searchPlaceholder="Pesquise pelo fornecedor"
                     >
                       {suppliersList.map((supplier) => (
                         <ComboboxCellule.Item
