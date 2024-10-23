@@ -27,7 +27,7 @@ export const ProductsFilterOrganism: FC = () => {
     if (productName) urlSearchParams.append("productName", productName);
     if (supplierName) urlSearchParams.append("supplierName", supplierName);
 
-    router.push(`${pathname}?${urlSearchParams.toString()}`);
+    router.push(`${pathname}?${urlSearchParams.toString()}`, { scroll: false });
   }
 
   const filtrarListaDebounced = useDebounceCallback(filtrarLista, 500);
