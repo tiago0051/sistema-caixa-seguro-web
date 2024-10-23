@@ -1,12 +1,21 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { dbClient } from "./prismaClient";
 
-export async function createProductDB(
-  companyId: string,
-  costPrice: number,
-  name: string,
-  salePrice: number
-) {
+interface CreateProductDBProps {
+  companyId: string;
+  costPrice: number;
+  name: string;
+  salePrice: number;
+  supplierId: string;
+}
+
+export async function createProductDB({
+  companyId,
+  costPrice,
+  name,
+  salePrice,
+  supplierId,
+}: CreateProductDBProps) {
   const productDB = await dbClient.product.create({
     data: {
       costPrice,
@@ -15,6 +24,11 @@ export async function createProductDB(
       company: {
         connect: {
           id: companyId,
+        },
+      },
+      supplier: {
+        connect: {
+          id: supplierId,
         },
       },
     },

@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,7 +30,7 @@ export function RegisterProductService(): RegisterProductServiceReturn {
   const onSubmit: SubmitHandler<z.infer<typeof RegisterProductSchema>> = async (
     data
   ) => {
-    const { costAmount, name, saleAmount } = data;
+    const { costAmount, name, saleAmount, supplierId } = data;
 
     let error = false;
 
@@ -44,7 +45,13 @@ export function RegisterProductService(): RegisterProductServiceReturn {
     if (error) return;
 
     if (!isEditing) {
-      await createProduct(companyId, costAmount, name, saleAmount);
+      await createProduct({
+        companyId,
+        costPrice: costAmount,
+        name,
+        salePrice: saleAmount,
+        supplierId,
+      });
 
       toast({
         title: "Sucesso",

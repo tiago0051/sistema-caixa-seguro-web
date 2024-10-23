@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { ProductsListTableOrganism } from "./organisms/ProductsListTable";
 import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListTableSkeleton";
 import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
+import { HeaderOrganism } from "@/components/organisms/Header";
 
 type SearchParams = Promise<Record<string, string>>;
 
@@ -21,16 +22,12 @@ export default async function ProductsPage({
 
   return (
     <div className="grid gap-8">
-      <div className="md:flex-row justify-between flex flex-col gap-6 items-center">
-        <h1 className="text-3xl font-bold text-center md:text-left">
-          Produtos
-        </h1>
-        <div>
-          <Link href={`/dashboard/${clientId}/company/${companyId}/products/0`}>
-            <Button>Adicionar produto</Button>
-          </Link>
-        </div>
-      </div>
+      <HeaderOrganism showBackButton={true} title={"Produtos"}>
+        <Link href={`/dashboard/${clientId}/company/${companyId}/products/0`}>
+          <Button>Adicionar produto</Button>
+        </Link>
+      </HeaderOrganism>
+
       <div className="grid md:grid-cols-[350px_auto] items-start">
         <ProductsFilterOrganism />
 

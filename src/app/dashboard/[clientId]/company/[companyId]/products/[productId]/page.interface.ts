@@ -9,7 +9,5 @@ export interface RegisterProductServiceReturn {
 }
 
 export interface RegisterProductViewProps {
-  form: UseFormReturn<z.infer<typeof RegisterProductSchema>>;
-  isEditing: boolean;
-  onSubmit: SubmitHandler<z.infer<typeof RegisterProductSchema>>;
+  suppliersList: SupplierI[];
 }

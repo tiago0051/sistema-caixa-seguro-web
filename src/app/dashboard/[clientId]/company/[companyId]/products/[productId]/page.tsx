@@ -1,10 +1,11 @@
-"use client";
-
 import { RegisterProductView } from "./page.view";
 import { RegisterProductService } from "./page.service";
+import { getSuppliersList } from "@/services/domain/supplier";
 
-export default function RegisterProduct() {
-  const props = RegisterProductService();
+export default async function RegisterProduct({ params }: { params: Params }) {
+  const { companyId } = await params;
 
-  return <RegisterProductView {...props} />;
+  const suppliersList = await getSuppliersList({ companyId });
+
+  return <RegisterProductView suppliersList={suppliersList} />;
 }

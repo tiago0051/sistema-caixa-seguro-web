@@ -85,10 +85,10 @@ connect()
         codGru: dadosLinha.CodGru,
       });
 
-      await pg.query("INSERT INTO supplier (id, name) VALUES ($1, $2)", [
-        id,
-        dadosLinha.DesGru,
-      ]);
+      await pg.query(
+        "INSERT INTO supplier (id, name, company_id) VALUES ($1, $2, $3)",
+        [id, dadosLinha.DesGru, companyId]
+      );
     });
 
     let productsLength = 0;

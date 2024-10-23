@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { FC, ReactNode } from "react";
 import { IoArrowBack } from "react-icons/io5";
@@ -28,11 +30,9 @@ export const HeaderOrganism: FC<HeaderProps> = ({
           Voltar
         </button>
       )}
-      <div className="flex-1">
+      <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-center md:text-left">
-            {title}
-          </h1>
+          <h1 className="text-3xl font-bold">{title}</h1>
           {subtitle && <p className="text-xs md:text-sm">{subtitle}</p>}
         </div>
 

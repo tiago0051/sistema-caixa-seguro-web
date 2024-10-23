@@ -6,13 +6,28 @@ import {
   getProductListDB,
 } from "../db/product";
 
-export async function createProduct(
-  companyId: string,
-  costPrice: number,
-  name: string,
-  salePrice: number
-) {
-  const product = await createProductDB(companyId, costPrice, name, salePrice);
+interface CreateProductProps {
+  companyId: string;
+  costPrice: number;
+  name: string;
+  salePrice: number;
+  supplierId: string;
+}
+
+export async function createProduct({
+  companyId,
+  costPrice,
+  name,
+  salePrice,
+  supplierId,
+}: CreateProductProps) {
+  const product = await createProductDB({
+    companyId,
+    costPrice,
+    name,
+    salePrice,
+    supplierId,
+  });
 
   return product;
 }

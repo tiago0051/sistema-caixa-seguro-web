@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import {
@@ -11,12 +12,14 @@ import { Input } from "@/components/ui/input";
 import { FormProvider } from "react-hook-form";
 import { RegisterProductViewProps } from "./page.interface";
 import { HeaderOrganism } from "@/components/organisms/Header";
+import { ComboboxCellule } from "@/components/cellules/Combobox";
+import { RegisterProductService } from "./page.service";
 
 export function RegisterProductView({
-  form,
-  isEditing,
-  onSubmit,
+  suppliersList,
 }: RegisterProductViewProps) {
+  const { form, isEditing, onSubmit } = RegisterProductService();
+
   return (
     <section>
       <HeaderOrganism
@@ -26,7 +29,7 @@ export function RegisterProductView({
 
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid gap-2 md:grid-cols-3 md:max-w-screen-sm">
+          <div className="grid gap-3 md:grid-cols-3 md:max-w-screen-sm">
             <FormField
               control={form.control}
               name="name"
@@ -61,6 +64,42 @@ export function RegisterProductView({
                   <FormLabel>Valor venda</FormLabel>
                   <FormControl>
                     <CurrencyInput {...field} placeholder="0,00" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="supplierId"
+              render={({ field }) => (
+                <FormItem className="grid">
+                  <FormLabel>Fornecedor</FormLabel>
+                  <FormControl>
+                    <ComboboxCellule.Root
+                      trigger={
+                        <ComboboxCellule.Trigger>
+                          {
+                            suppliersList.find(
+                              (supplier) => supplier.id === field.value
+                            )?.name
+                          }
+                        </ComboboxCellule.Trigger>
+                      }
+                      searchEmpty="Fornecedor não encontrado"
+                    >
+                      {suppliersList.map((supplier) => (
+                        <ComboboxCellule.Item
+                          onSelect={() => field.onChange(supplier.id)}
+                          selected={field.value === supplier.id}
+                          value={supplier.name}
+                          key={supplier.id}
+                        >
+                          {supplier.name}
+                        </ComboboxCellule.Item>
+                      ))}
+                    </ComboboxCellule.Root>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
