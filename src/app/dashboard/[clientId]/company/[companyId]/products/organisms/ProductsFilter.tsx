@@ -1,31 +1,43 @@
 "use client";
 
+import { ComboboxCellule } from "@/components/cellules/Combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FC, useEffect, useState } from "react";
+import { FiX } from "react-icons/fi";
 import { useDebounceCallback } from "usehooks-ts";
 
-export const ProductsFilterOrganism: FC = () => {
+interface ProductsFilterOrganismProps {
+  suppliersList: SupplierI[];
+}
+
+export const ProductsFilterOrganism: FC<ProductsFilterOrganismProps> = ({
+  suppliersList,
+}) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [productCod, setProductCod] = useState("");
   const [productName, setProductName] = useState("");
-  const [supplierName, setSupplierName] = useState("");
+  const [supplierId, setSupplierId] = useState("");
+
+  const supplierSelected = suppliersList.find(
+    (supplier) => supplier.id === supplierId
+  );
 
   function filtrarLista() {
     const urlSearchParams = new URLSearchParams(searchParams.toString());
 
     urlSearchParams.delete("productCod");
     urlSearchParams.delete("productName");
-    urlSearchParams.delete("supplierName");
+    urlSearchParams.delete("supplierId");
     urlSearchParams.delete("page");
 
     if (productCod) urlSearchParams.append("productCod", productCod);
     if (productName) urlSearchParams.append("productName", productName);
-    if (supplierName) urlSearchParams.append("supplierName", supplierName);
+    if (supplierId) urlSearchParams.append("supplierId", supplierId);
 
     router.push(`${pathname}?${urlSearchParams.toString()}`, { scroll: false });
   }
@@ -36,7 +48,7 @@ export const ProductsFilterOrganism: FC = () => {
     filtrarListaDebounced();
 
     return () => filtrarListaDebounced.cancel();
-  }, [productCod, productName, supplierName]);
+  }, [productCod, productName, supplierId]);
 
   return (
     <div className="md:border-r border-separate md:mr-4 grid gap-6 md:pr-4 mb-8 md:mb-0">
@@ -57,11 +69,33 @@ export const ProductsFilterOrganism: FC = () => {
           />
         </div>
         <div className="grid gap-2">
-          <Label>Nome do fabricante</Label>
-          <Input
-            onChange={(event) => setSupplierName(event.currentTarget.value)}
-            value={supplierName}
-          />
+          <Label>Fabricante</Label>
+
+          <ComboboxCellule.Root
+            trigger={
+              <ComboboxCellule.Trigger>
+                {supplierSelected && (
+                  <>
+                    {supplierSelected.name}
+                    <FiX className="text-xl text-red-500" />
+                  </>
+                )}
+              </ComboboxCellule.Trigger>
+            }
+            searchEmpty="Fornecedor não encontrado"
+            selectClean={() => setSupplierId("")}
+          >
+            {suppliersList.map((supplier) => (
+              <ComboboxCellule.Item
+                onSelect={() => setSupplierId(supplier.id)}
+                selected={supplierId === supplier.id}
+                value={supplier.name}
+                key={supplier.id}
+              >
+                {supplier.name}
+              </ComboboxCellule.Item>
+            ))}
+          </ComboboxCellule.Root>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { ProductsListTableOrganism } from "./organisms/ProductsListTable";
 import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListTableSkeleton";
 import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
 import { HeaderOrganism } from "@/components/organisms/Header";
+import { getSuppliersList } from "@/services/domain/supplier";
 
 type SearchParams = Promise<Record<string, string>>;
 
@@ -20,6 +21,8 @@ export default async function ProductsPage({
   const { clientId, companyId } = await params;
   const searchParamsStorage = await searchParams;
 
+  const suppliersList = await getSuppliersList({ companyId });
+
   return (
     <div className="grid gap-8">
       <HeaderOrganism showBackButton={true} title={"Produtos"}>
@@ -29,7 +32,7 @@ export default async function ProductsPage({
       </HeaderOrganism>
 
       <div className="grid md:grid-cols-[350px_auto] items-start">
-        <ProductsFilterOrganism />
+        <ProductsFilterOrganism suppliersList={suppliersList} />
 
         <Suspense
           key={new URLSearchParams(searchParamsStorage).toString()}

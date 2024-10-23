@@ -43,7 +43,7 @@ export async function getProductList({
   searchParams: {
     productCod?: string;
     productName?: string;
-    supplierName?: string;
+    supplierId?: string;
   };
   take?: number;
 }) {

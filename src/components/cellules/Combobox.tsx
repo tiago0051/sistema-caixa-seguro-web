@@ -104,12 +104,24 @@ interface ComboboxProps {
   trigger: ReactElement<typeof ComboboxTrigger>;
   children: ReactElement<typeof ComboboxItem>[];
   searchEmpty: string;
+  selectClean?: () => void;
 }
 
-const Combobox: FC<ComboboxProps> = ({ children, trigger, searchEmpty }) => {
+const Combobox: FC<ComboboxProps> = ({
+  children,
+  trigger,
+  searchEmpty,
+  selectClean,
+}) => {
   const popoverTriggerRef = useRef<HTMLButtonElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      selectClean && selectClean();
+    }
+  }, [isOpen]);
 
   return (
     <ComboboxContext.Provider

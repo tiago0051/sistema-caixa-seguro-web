@@ -60,7 +60,7 @@ export async function getProductListDB({
   searchParams: {
     productCod?: string;
     productName?: string;
-    supplierName?: string;
+    supplierId?: string;
   };
   take?: number;
 }) {
@@ -87,12 +87,9 @@ export async function getProductListDB({
               },
             },
             {
-              supplier: searchParams.supplierName
+              supplier: searchParams.supplierId
                 ? {
-                    name: {
-                      contains: searchParams.supplierName,
-                      mode: "insensitive",
-                    },
+                    id: searchParams.supplierId,
                   }
                 : undefined,
             },
@@ -125,7 +122,7 @@ export async function getProductListCountDB({
   searchParams: {
     productCod?: string;
     productName?: string;
-    supplierName?: string;
+    supplierId?: string;
   };
 }) {
   const productsListCountDB = await dbClient.product.count({
@@ -145,16 +142,13 @@ export async function getProductListCountDB({
                 mode: "insensitive",
               },
             },
-            {
-              supplier: searchParams.supplierName
-                ? {
-                    name: {
-                      contains: searchParams.supplierName,
-                      mode: "insensitive",
-                    },
-                  }
-                : undefined,
-            },
+            // {
+            //   supplier: searchParams.supplierId
+            //     ? {
+            //         id: searchParams.supplierId,
+            //       }
+            //     : undefined,
+            // },
           ],
         },
       ],
