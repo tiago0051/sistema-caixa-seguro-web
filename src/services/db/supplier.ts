@@ -8,6 +8,9 @@ export async function getSuppliersListDB({
   companyId,
 }: GetSuppliersListDBProps) {
   const suppliersListDB = await dbClient.supplier.findMany({
+    orderBy: {
+      name: "asc",
+    },
     where: {
       companyId,
     },
