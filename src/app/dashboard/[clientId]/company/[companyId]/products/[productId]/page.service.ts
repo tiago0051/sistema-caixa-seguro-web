@@ -3,17 +3,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { RegisterProductSchema } from "./page.schema";
 import { createProduct } from "@/services/domain/product";
-import {
-  RegisterProductServiceProps,
-  RegisterProductServiceReturn,
-} from "./page.interface";
+import { RegisterProductServiceReturn } from "./page.interface";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-export function RegisterProductService({
-  params,
-}: RegisterProductServiceProps): RegisterProductServiceReturn {
-  const { clientId, companyId, productId } = params;
+export function RegisterProductService(): RegisterProductServiceReturn {
+  const { clientId, companyId, productId } = useParams() as {
+    clientId: string;
+    companyId: string;
+    productId: string;
+  };
   const router = useRouter();
 
   const isEditing = z.string().uuid().safeParse(productId).success;

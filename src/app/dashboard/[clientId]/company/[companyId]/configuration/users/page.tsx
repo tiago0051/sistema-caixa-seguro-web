@@ -1,12 +1,10 @@
 import { usersListService } from "./page.service";
 import { UsersListView } from "./page.view";
 
-export default async function UsersList({
-  params,
-}: {
-  params: { companyId: string };
-}) {
-  const props = await usersListService({ params });
+export default async function UsersList({ params }: { params: Params }) {
+  const { companyId } = await params;
 
-  return <UsersListView {...props} params={params} />;
+  const props = await usersListService({ params: { companyId } });
+
+  return <UsersListView {...props} params={{ companyId }} />;
 }

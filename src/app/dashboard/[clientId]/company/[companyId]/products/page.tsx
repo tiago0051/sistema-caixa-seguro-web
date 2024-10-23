@@ -8,10 +8,7 @@ import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
 type SearchParams = Promise<Record<string, string>>;
 
 interface ProductsPageProps {
-  params: {
-    clientId: string;
-    companyId: string;
-  };
+  params: Params;
   searchParams: SearchParams;
 }
 
