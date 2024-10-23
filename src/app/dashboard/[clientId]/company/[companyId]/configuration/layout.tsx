@@ -6,19 +6,18 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
 interface ConfigurationLayoutProps {
   children: ReactNode;
-  params: { clientId: string; companyId: string };
 }
 
 export default function ConfigurationLayout({
   children,
-  params,
 }: ConfigurationLayoutProps) {
   const pathname = usePathname();
+  const params = useParams();
 
   const links = [
     {
