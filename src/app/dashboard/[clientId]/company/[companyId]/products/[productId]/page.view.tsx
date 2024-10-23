@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { FormProvider } from "react-hook-form";
 import { RegisterProductViewProps } from "./page.interface";
+import { HeaderOrganism } from "@/components/organisms/Header";
 
 export function RegisterProductView({
   form,
@@ -17,58 +18,61 @@ export function RegisterProductView({
   onSubmit,
 }: RegisterProductViewProps) {
   return (
-    <div className="grid gap-8">
-      <div>
-        <h1 className="text-3xl font-bold">Produtos</h1>
-      </div>
-      <FormProvider {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-6 gap-4 max-w-2xl"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="col-span-4">
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nome do produto" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="costAmount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Valor custo</FormLabel>
-                <FormControl>
-                  <CurrencyInput {...field} placeholder="0,00" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="saleAmount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Valor venda</FormLabel>
-                <FormControl>
-                  <CurrencyInput {...field} placeholder="0,00" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <section>
+      <HeaderOrganism
+        showBackButton={true}
+        title={isEditing ? "Editar Produto" : "Cadastrar Produto"}
+      />
 
-          <Button type="submit">{isEditing ? "Salvar" : "Cadastrar"}</Button>
+      <FormProvider {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="grid gap-2 md:grid-cols-3 md:max-w-screen-sm">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nome do produto" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="costAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Valor custo</FormLabel>
+                  <FormControl>
+                    <CurrencyInput {...field} placeholder="0,00" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="saleAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Valor venda</FormLabel>
+                  <FormControl>
+                    <CurrencyInput {...field} placeholder="0,00" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <Button type="submit" className="w-full max-w-40">
+            {isEditing ? "Salvar" : "Cadastrar"}
+          </Button>
         </form>
       </FormProvider>
-    </div>
+    </section>
   );
 }
