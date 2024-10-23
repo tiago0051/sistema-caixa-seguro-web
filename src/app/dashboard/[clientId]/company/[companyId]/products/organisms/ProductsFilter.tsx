@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
-export const ProductsFilter: FC = () => {
+export const ProductsFilterOrganism: FC = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -36,7 +36,7 @@ export const ProductsFilter: FC = () => {
     filtrarListaDebounced();
 
     return () => filtrarListaDebounced.cancel();
-  }, [filtrarListaDebounced, productCod, productName, supplierName]);
+  }, [productCod, productName, supplierName]);
 
   return (
     <div className="md:border-r border-separate md:mr-4 grid gap-6 md:pr-4 mb-8 md:mb-0">

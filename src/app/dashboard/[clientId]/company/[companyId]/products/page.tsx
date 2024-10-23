@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ProductsFilter } from "./organisms/ProductsFilter";
 import { Suspense } from "react";
-import { ProductsListTableOrganism } from "./organisms/ProductsListTableBody";
-import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListSkeleton";
+import { ProductsListTableOrganism } from "./organisms/ProductsListTable";
+import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListTableSkeleton";
+import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
 
 interface ProductsPageProps {
   params: {
@@ -13,7 +13,7 @@ interface ProductsPageProps {
   searchParams: Record<string, string>;
 }
 
-export default async function ProductsPage({
+export default function ProductsPage({
   params,
   searchParams,
 }: Readonly<ProductsPageProps>) {
@@ -32,9 +32,12 @@ export default async function ProductsPage({
         </div>
       </div>
       <div className="grid md:grid-cols-[350px_auto] items-start">
-        <ProductsFilter />
+        <ProductsFilterOrganism />
 
-        <Suspense fallback={<ProductsListTableSkeletonOrganism />}>
+        <Suspense
+          key={new URLSearchParams(searchParams).toString()}
+          fallback={<ProductsListTableSkeletonOrganism />}
+        >
           <ProductsListTableOrganism
             params={params}
             searchParams={searchParams}

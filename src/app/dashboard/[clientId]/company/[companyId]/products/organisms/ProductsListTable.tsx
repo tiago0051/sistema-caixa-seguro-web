@@ -20,10 +20,10 @@ interface ProductsListTableProps {
   searchParams: Record<string, string>;
 }
 
-export const ProductsListTableOrganism: FC<ProductsListTableProps> = async ({
+export async function ProductsListTableOrganism({
   params,
   searchParams,
-}) => {
+}: ProductsListTableProps) {
   const productsList = await getProductList({
     companyId: params.companyId,
     searchParams,
@@ -80,4 +80,4 @@ export const ProductsListTableOrganism: FC<ProductsListTableProps> = async ({
       )}
     </div>
   );
-};
+}

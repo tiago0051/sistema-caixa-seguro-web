@@ -29,11 +29,25 @@ export const ProductsListTableSkeletonOrganism: FC = async () => {
         </TableHeader>
 
         <TableBody>
-          <TableRow>
-            <TableCell colSpan={6}>
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-          </TableRow>
+          {new Array(10).fill({}).map((_v, index) => (
+            <TableRow key={index}>
+              <TableCell colSpan={2}>
+                <Skeleton className="h-5 w-full" />
+              </TableCell>
+              <TableCell colSpan={1}>
+                <Skeleton className="h-5 w-full" />
+              </TableCell>
+              <TableCell colSpan={1}>
+                <Skeleton className="h-5 w-full" />
+              </TableCell>
+              <TableCell colSpan={1}>
+                <Skeleton className="h-5 w-full" />
+              </TableCell>
+              <TableCell colSpan={1}>
+                <Skeleton className="h-5 w-full" />
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
