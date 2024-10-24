@@ -2,13 +2,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import { RegisterProductSchema } from "./page.schema";
 import { createProduct } from "@/services/domain/product";
-import { RegisterProductServiceReturn } from "./page.interface";
 import { toast } from "@/components/ui/use-toast";
 import { useParams, useRouter } from "next/navigation";
+import { DialogCreateProductSchema } from "./DialogCreateProduct.schema";
+import { DialogCreateProductServiceReturn } from "./DialogCreateProduct.interface";
+import { useState } from "react";
 
-export function RegisterProductService(): RegisterProductServiceReturn {
+export function DialogCreateProductService(): DialogCreateProductServiceReturn {
   const { clientId, companyId, productId } = useParams() as {
     clientId: string;
     companyId: string;
@@ -16,10 +17,13 @@ export function RegisterProductService(): RegisterProductServiceReturn {
   };
   const router = useRouter();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const isEditing = z.string().uuid().safeParse(productId).success;
 
-  const form = useForm<z.infer<typeof RegisterProductSchema>>({
-    resolver: zodResolver(RegisterProductSchema),
+  const form = useForm<z.infer<typeof DialogCreateProductSchema>>({
+    resolver: zodResolver(DialogCreateProductSchema),
     defaultValues: {
       costAmount: 0,
       name: "",
@@ -27,9 +31,9 @@ export function RegisterProductService(): RegisterProductServiceReturn {
     },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof RegisterProductSchema>> = async (
-    data
-  ) => {
+  const onSubmit: SubmitHandler<
+    z.infer<typeof DialogCreateProductSchema>
+  > = async (data) => {
     const { costAmount, name, saleAmount, supplierId } = data;
 
     let error = false;
@@ -43,6 +47,8 @@ export function RegisterProductService(): RegisterProductServiceReturn {
     }
 
     if (error) return;
+
+    setIsLoading(true);
 
     if (!isEditing) {
       await createProduct({
@@ -58,9 +64,18 @@ export function RegisterProductService(): RegisterProductServiceReturn {
         description: "Produto salvo com sucesso!",
       });
 
-      router.push(`/dashboard/${clientId}/company/${companyId}/products`);
+      setIsOpen(false);
     }
+
+    setIsLoading(false);
   };
 
-  return { form, isEditing, onSubmit };
+  return {
+    form,
+    isEditing,
+    isLoading,
+    isOpen,
+    onSubmit,
+    onChangeIsOpen: (isOpenCB) => setIsOpen(isOpenCB),
+  };
 }

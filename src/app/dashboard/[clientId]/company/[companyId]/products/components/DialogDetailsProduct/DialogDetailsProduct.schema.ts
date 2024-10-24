@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const RegisterProductSchema = z.object({
+export const DialogDetailsProductSchema = z.object({
   name: z.string(),
   costAmount: z.coerce.number(),
   saleAmount: z.coerce.number(),

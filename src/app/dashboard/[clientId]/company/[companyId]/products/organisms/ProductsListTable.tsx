@@ -1,5 +1,4 @@
 import { PaginationOrganism } from "@/components/organisms/Pagination";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -9,8 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getProductList } from "@/services/domain/product";
-import { FC } from "react";
+import { getProductsList } from "@/services/domain/product";
+import { DialogDetailsProduct } from "../components/DialogDetailsProduct/DialogDetailsProduct";
 
 interface ProductsListTableProps {
   params: {
@@ -24,7 +23,7 @@ export async function ProductsListTableOrganism({
   params,
   searchParams,
 }: ProductsListTableProps) {
-  const productsList = await getProductList({
+  const productsList = await getProductsList({
     companyId: params.companyId,
     searchParams,
     page: searchParams.page ? Number(searchParams.page) : 0,
@@ -61,6 +60,12 @@ export async function ProductsListTableOrganism({
                 })}
               </TableCell>
               <TableCell className="text-right">{product.quantity}</TableCell>
+              <TableCell>
+                <DialogDetailsProduct
+                  companyId={params.companyId}
+                  productId={product.id}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

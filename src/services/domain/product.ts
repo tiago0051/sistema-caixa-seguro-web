@@ -2,8 +2,9 @@
 
 import {
   createProductDB,
+  getProductDB,
   getProductListCountDB,
-  getProductListDB,
+  getProductsListDB,
 } from "../db/product";
 
 interface CreateProductProps {
@@ -32,12 +33,13 @@ export async function createProduct({
   return product;
 }
 
-export async function getProductList({
-  companyId,
-  page = 0,
-  searchParams,
-  take = 10,
-}: {
+export async function getProduct(productId: string) {
+  const product = await getProductDB(productId);
+
+  return product;
+}
+
+interface GetProductsListProps {
   companyId: string;
   page?: number;
   searchParams: {
@@ -46,8 +48,15 @@ export async function getProductList({
     supplierId?: string;
   };
   take?: number;
-}) {
-  const productsList = await getProductListDB({
+}
+
+export async function getProductsList({
+  companyId,
+  page = 0,
+  searchParams,
+  take = 10,
+}: GetProductsListProps) {
+  const productsList = await getProductsListDB({
     companyId,
     take,
     searchParams,

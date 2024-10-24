@@ -49,7 +49,29 @@ export async function createProductDB({
   return productMap(productDB);
 }
 
-export async function getProductListDB({
+export async function getProductDB(productId: string) {
+  const productDB = await dbClient.product.findUnique({
+    where: {
+      id: productId,
+    },
+    select: {
+      costPrice: true,
+      id: true,
+      name: true,
+      salePrice: true,
+      supplier: true,
+      productStorages: {
+        select: {
+          quantity: true,
+        },
+      },
+    },
+  });
+
+  return productDB && productMap(productDB);
+}
+
+export async function getProductsListDB({
   companyId,
   page = 0,
   searchParams,

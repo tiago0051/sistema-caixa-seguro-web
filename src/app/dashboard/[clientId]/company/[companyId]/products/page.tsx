@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Suspense } from "react";
 import { ProductsListTableOrganism } from "./organisms/ProductsListTable";
 import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListTableSkeleton";
 import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
 import { HeaderOrganism } from "@/components/organisms/Header";
 import { getSuppliersList } from "@/services/domain/supplier";
+import { DialogCreateProduct } from "./components/DialogCreateProduct/DialogCreateProduct";
 
 type SearchParams = Promise<Record<string, string>>;
 
@@ -26,9 +25,7 @@ export default async function ProductsPage({
   return (
     <div className="grid gap-8">
       <HeaderOrganism showBackButton={true} title={"Produtos"}>
-        <Link href={`/dashboard/${clientId}/company/${companyId}/products/0`}>
-          <Button>Adicionar produto</Button>
-        </Link>
+        <DialogCreateProduct companyId={companyId} />
       </HeaderOrganism>
 
       <div className="grid md:grid-cols-[350px_auto] items-start">
