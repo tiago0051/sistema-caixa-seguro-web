@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
-import { dbClient } from "./prismaClient";
+import prisma from "../services/prisma";
 
 interface CreateProductDBProps {
   companyId: string;
@@ -16,7 +16,7 @@ export async function createProductDB({
   salePrice,
   supplierId,
 }: CreateProductDBProps) {
-  const productDB = await dbClient.product.create({
+  const productDB = await prisma.product.create({
     data: {
       costPrice,
       name,
@@ -50,7 +50,7 @@ export async function createProductDB({
 }
 
 export async function getProductDB(productId: string) {
-  const productDB = await dbClient.product.findUnique({
+  const productDB = await prisma.product.findUnique({
     where: {
       id: productId,
     },
@@ -86,7 +86,7 @@ export async function getProductsListDB({
   };
   take?: number;
 }) {
-  const productsListDB = await dbClient.product.findMany({
+  const productsListDB = await prisma.product.findMany({
     take,
     skip: page * take,
     orderBy: {
@@ -147,7 +147,7 @@ export async function getProductListCountDB({
     supplierId?: string;
   };
 }) {
-  const productsListCountDB = await dbClient.product.count({
+  const productsListCountDB = await prisma.product.count({
     where: {
       AND: [
         { companyId },

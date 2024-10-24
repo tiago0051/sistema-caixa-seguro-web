@@ -1,10 +1,10 @@
 "use server";
 
-import { dbClient } from "./prismaClient";
 import { getNameInitials } from "@/utils/stringFormat";
+import prisma from "../services/prisma";
 
 export async function getUserClientsAndCompanies(userId: string) {
-  const clients = await dbClient.client.findMany({
+  const clients = await prisma.client.findMany({
     where: {
       companies: {
         some: {
@@ -47,7 +47,7 @@ export async function getUserClientsAndCompanies(userId: string) {
 }
 
 export async function getUserBranchesList(companyId: string, userId: string) {
-  const branchesListDB = dbClient.branch.findMany({
+  const branchesListDB = prisma.branch.findMany({
     where: {
       companyId,
       users: {
@@ -66,7 +66,7 @@ export async function getUserBranchesList(companyId: string, userId: string) {
 }
 
 export async function getUserByEmail(email: string) {
-  const userDB = dbClient.user.findUnique({
+  const userDB = prisma.user.findUnique({
     where: {
       email,
     },
@@ -81,7 +81,7 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function getUserById(userId: string): Promise<UserI | null> {
-  const user = await dbClient.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: userId,
     },
@@ -109,7 +109,7 @@ export async function getUserById(userId: string): Promise<UserI | null> {
 }
 
 export async function getUsersList(companyId: string): Promise<UserI[]> {
-  const usersListDB = await dbClient.user.findMany({
+  const usersListDB = await prisma.user.findMany({
     where: {
       branches: {
         some: {
@@ -142,7 +142,7 @@ export async function getUsersList(companyId: string): Promise<UserI[]> {
 }
 
 export async function getUserWithPassword(email: string) {
-  const userDB = dbClient.user.findUnique({
+  const userDB = prisma.user.findUnique({
     where: {
       email,
     },
@@ -162,7 +162,7 @@ export async function registerUser(
   email: string,
   branchesId: string[]
 ): Promise<UserI> {
-  const user = await dbClient.user.create({
+  const user = await prisma.user.create({
     data: {
       branches: {
         connect: branchesId.map((branchId) => ({
@@ -199,7 +199,7 @@ export async function updateUser(
   email: string,
   branchesId: string[]
 ) {
-  const user = await dbClient.user.update({
+  const user = await prisma.user.update({
     where: {
       id: userId,
     },

@@ -1,7 +1,7 @@
-import { dbClient } from "./prismaClient";
+import prisma from "../services/prisma";
 
 export async function getCompany(companyId: string) {
-  const companyDB = await dbClient.company.findUnique({
+  const companyDB = await prisma.company.findUnique({
     where: {
       id: companyId,
     },

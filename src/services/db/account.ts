@@ -1,7 +1,7 @@
-import { dbClient } from "./prismaClient";
+import prisma from "../services/prisma";
 
 export async function getAccountsListDB(companyId: string) {
-  const accountsListDB = await dbClient.account.findMany({
+  const accountsListDB = await prisma.account.findMany({
     where: {
       companyId,
     },

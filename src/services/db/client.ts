@@ -1,7 +1,7 @@
-import { dbClient } from "./prismaClient";
+import prisma from "../services/prisma";
 
 export async function getClient(clientId: string) {
-  const clientDB = await dbClient.client.findUnique({
+  const clientDB = await prisma.client.findUnique({
     where: {
       id: clientId,
     },

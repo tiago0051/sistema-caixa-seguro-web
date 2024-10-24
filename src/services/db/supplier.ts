@@ -1,4 +1,4 @@
-import { dbClient } from "./prismaClient";
+import prisma from "../services/prisma";
 
 interface GetSuppliersListDBProps {
   companyId: string;
@@ -7,7 +7,7 @@ interface GetSuppliersListDBProps {
 export async function getSuppliersListDB({
   companyId,
 }: GetSuppliersListDBProps) {
-  const suppliersListDB = await dbClient.supplier.findMany({
+  const suppliersListDB = await prisma.supplier.findMany({
     orderBy: {
       name: "asc",
     },

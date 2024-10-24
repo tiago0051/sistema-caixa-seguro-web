@@ -103,8 +103,8 @@ connect()
         [
           id,
           dadosLinha.DesPro,
-          dadosLinha.PcoCus,
-          dadosLinha.PcoVen,
+          Number(dadosLinha.PcoCus.replace(",", ".")),
+          Number(dadosLinha.PcoVen.replace(",", ".")),
           companyId,
           grupos.find((grupo) => grupo.codGru === dadosLinha.CodGru).id,
         ]
