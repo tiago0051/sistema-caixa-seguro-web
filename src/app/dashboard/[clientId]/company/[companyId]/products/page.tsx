@@ -24,7 +24,7 @@ export default async function ProductsPage({
 
   return (
     <div className="grid gap-8">
-      <HeaderOrganism showBackButton={true} title={"Produtos"}>
+      <HeaderOrganism title={"Produtos"}>
         <DialogCreateProduct companyId={companyId} />
       </HeaderOrganism>
 

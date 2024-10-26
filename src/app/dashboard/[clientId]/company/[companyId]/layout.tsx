@@ -1,5 +1,19 @@
 import { auth } from "@/auth";
-import { DashboardHeader } from "@/components/template/dashboardHeader";
+import { AppSidebar } from "@/components/app-sidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { getClient } from "@/services/db/client";
 import { getCompany } from "@/services/db/company";
 import { redirect } from "next/navigation";
@@ -29,15 +43,28 @@ export default async function DashboardLayout({
   if (!session?.user) return redirect("/auth/signIn");
 
   return (
-    <div>
-      <div>
-        <DashboardHeader
-          client={client}
-          company={company}
-          user={session?.user}
-        />
-      </div>
-      <div className="p-8">{children}</div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar client={client} company={company} />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+          <div className="flex items-center gap-2 px-3">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">Produtos</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Listagem</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
