@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { DistributionCentersListTableOrganism } from "./organisms/DistributionCentersListTable";
 import { DistributionCentersListTableSkeletonOrganism } from "./organisms/DistributionCentersListTableSkeleton";
 import { DistributionCentersFilterOrganism } from "./organisms/DistributionCentersFilter";
-import { DialogCreateStorage } from "./components/DialogCreateStorage/DialogCreateStorage";
 
 type SearchParams = Promise<Record<string, string>>;
 
@@ -21,9 +20,7 @@ export default async function DistributionCenters({
 
   return (
     <div className="grid gap-8">
-      <HeaderOrganism title={"Centros de distribuição"}>
-        <DialogCreateStorage companyId={companyId} />
-      </HeaderOrganism>
+      <HeaderOrganism title={"Centros de distribuição"} />
 
       <div className="grid md:grid-cols-[350px_auto] items-start">
         <DistributionCentersFilterOrganism />
