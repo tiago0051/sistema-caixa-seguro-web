@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/template/dashboardHeader/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -44,7 +44,7 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar client={client} company={company} />
+      <AppSidebar client={client} company={company} user={session.user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex items-center gap-2 px-3">

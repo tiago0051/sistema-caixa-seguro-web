@@ -1,9 +1,9 @@
 import * as React from "react";
-import { GalleryVerticalEnd } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
@@ -17,6 +17,13 @@ import {
 import Image from "next/image";
 import { ClientI } from "@/types/client/client";
 import { CompanyI } from "@/types/company/company";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { Separator } from "../../ui/separator";
+import { FiChevronRight, FiEdit, FiLogOut } from "react-icons/fi";
+import Link from "next/link";
+import { DropdownMenu, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import { Button } from "../../ui/button";
+import { DropDownContent } from "./components/DropDownContent";
 
 interface NavSubItem {
   title: string;
@@ -34,9 +41,14 @@ interface NavItem {
 interface AppSidebarProps {
   client: ClientI;
   company: CompanyI;
+  user: UserI;
 }
 
-export const AppSidebar: React.FC<AppSidebarProps> = ({ client, company }) => {
+export const AppSidebar: React.FC<AppSidebarProps> = ({
+  client,
+  company,
+  user,
+}) => {
   const data: { navMain: NavItem[] } = {
     navMain: [
       {
@@ -59,8 +71,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ client, company }) => {
         isActive: true,
         items: [
           {
-            title: "Centro de Distribuição",
-            url: "#",
+            title: "Centros de Distribuição",
+            url: `/dashboard/${client.id}/company/${company.id}/distributionCenters`,
           },
         ],
       },
@@ -119,6 +131,37 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ client, company }) => {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <Link
+          href="/"
+          className="flex justify-between items-center hover:text-primary"
+        >
+          <p className="text-base">{company.name}</p>
+          <FiEdit />
+        </Link>
+        <Separator />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant={"ghost"}
+              className="flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <Avatar className="border border-separate">
+                  <AvatarFallback>{user.nameInitials}</AvatarFallback>
+                  <AvatarImage />
+                </Avatar>
+                <p className="text-base truncate text-left w-full">
+                  {user.name}
+                </p>
+              </div>
+              <FiChevronRight className="text-base" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropDownContent />
+        </DropdownMenu>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
