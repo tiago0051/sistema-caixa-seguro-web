@@ -17,18 +17,18 @@ export const DistributionCentersFilterOrganism: FC<
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [productCod, setProductCod] = useState("");
-  const [productName, setProductName] = useState("");
+  const [storageCod, setStorageCod] = useState("");
+  const [storageName, setStorageName] = useState("");
 
   function filtrarLista() {
     const urlSearchParams = new URLSearchParams(searchParams.toString());
 
-    urlSearchParams.delete("productCod");
-    urlSearchParams.delete("productName");
+    urlSearchParams.delete("storageCod");
+    urlSearchParams.delete("storageName");
     urlSearchParams.delete("page");
 
-    if (productCod) urlSearchParams.append("productCod", productCod);
-    if (productName) urlSearchParams.append("productName", productName);
+    if (storageCod) urlSearchParams.append("storageCod", storageCod);
+    if (storageName) urlSearchParams.append("storageName", storageName);
 
     router.push(`${pathname}?${urlSearchParams.toString()}`, { scroll: false });
   }
@@ -39,7 +39,7 @@ export const DistributionCentersFilterOrganism: FC<
     filtrarListaDebounced();
 
     return () => filtrarListaDebounced.cancel();
-  }, [productCod, productName]);
+  }, [storageCod, storageName]);
 
   return (
     <div className="md:border-r border-separate md:mr-4 grid gap-6 md:pr-4 mb-8 md:mb-0">
@@ -48,15 +48,15 @@ export const DistributionCentersFilterOrganism: FC<
         <div className="grid gap-2">
           <Label>Código</Label>
           <Input
-            onChange={(event) => setProductCod(event.currentTarget.value)}
-            value={productCod}
+            onChange={(event) => setStorageCod(event.currentTarget.value)}
+            value={storageCod}
           />
         </div>
         <div className="grid gap-2">
           <Label>Nome</Label>
           <Input
-            onChange={(event) => setProductName(event.currentTarget.value)}
-            value={productName}
+            onChange={(event) => setStorageName(event.currentTarget.value)}
+            value={storageName}
           />
         </div>
       </div>

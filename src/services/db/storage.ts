@@ -96,6 +96,40 @@ export async function getStoragesListCountDB({
   return storagesListCountDB;
 }
 
+interface CreateStorageDBprops {
+  companyId: string;
+  name: string;
+}
+
+export async function createStorageDB({
+  companyId,
+  name,
+}: CreateStorageDBprops) {
+  const storageDB = await prisma.storage.create({
+    data: {
+      name,
+      company: {
+        connect: {
+          id: companyId,
+        },
+      },
+    },
+    select: {
+      createdAt: true,
+      id: true,
+      name: true,
+      _count: {
+        select: {
+          productStorages: true,
+        },
+      },
+      updatedAt: true,
+    },
+  });
+
+  return storageMap(storageDB);
+}
+
 interface StorageMapProps {
   createdAt: Date;
   id: string;

@@ -1,4 +1,10 @@
-import { getStoragesListCountDB, getStoragesListDB } from "../db/storage";
+"use server";
+
+import {
+  createStorageDB,
+  getStoragesListCountDB,
+  getStoragesListDB,
+} from "../db/storage";
 
 interface GetStoragesListProps {
   companyId: string;
@@ -31,4 +37,15 @@ export async function getStoragesList({
     items: storagesList,
     totalPages: Math.ceil(storagesListCount / take),
   };
+}
+
+interface CreateStorageProps {
+  companyId: string;
+  name: string;
+}
+
+export async function createStorage({ companyId, name }: CreateStorageProps) {
+  const storage = await createStorageDB({ companyId, name });
+
+  return storage;
 }

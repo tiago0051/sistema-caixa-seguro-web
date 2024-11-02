@@ -4,7 +4,6 @@ import { z } from "zod";
 
 export interface DialogCreateProductServiceReturn {
   form: UseFormReturn<z.infer<typeof DialogCreateProductSchema>>;
-  isEditing: boolean;
   isLoading: boolean;
   isOpen: boolean;
   onChangeIsOpen: (isOpenCB: boolean) => void;

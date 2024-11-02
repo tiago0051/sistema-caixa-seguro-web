@@ -71,6 +71,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         isActive: true,
         items: [
           {
+            title: "Estoque",
+            url: `/dashboard/${client.id}/company/${company.id}/products`,
+          },
+          {
             title: "Centros de Distribuição",
             url: `/dashboard/${client.id}/company/${company.id}/distributionCenters`,
           },

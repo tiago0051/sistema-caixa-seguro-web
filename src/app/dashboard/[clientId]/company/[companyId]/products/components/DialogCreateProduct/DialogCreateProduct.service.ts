@@ -10,17 +10,13 @@ import { DialogCreateProductServiceReturn } from "./DialogCreateProduct.interfac
 import { useState } from "react";
 
 export function DialogCreateProductService(): DialogCreateProductServiceReturn {
-  const { clientId, companyId, productId } = useParams() as {
-    clientId: string;
+  const { companyId } = useParams() as {
     companyId: string;
-    productId: string;
   };
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const isEditing = z.string().uuid().safeParse(productId).success;
 
   const form = useForm<z.infer<typeof DialogCreateProductSchema>>({
     resolver: zodResolver(DialogCreateProductSchema),
@@ -50,29 +46,26 @@ export function DialogCreateProductService(): DialogCreateProductServiceReturn {
 
     setIsLoading(true);
 
-    if (!isEditing) {
-      await createProduct({
-        companyId,
-        costPrice: costAmount,
-        name,
-        salePrice: saleAmount,
-        supplierId,
-      });
+    await createProduct({
+      companyId,
+      costPrice: costAmount,
+      name,
+      salePrice: saleAmount,
+      supplierId,
+    });
 
-      toast({
-        title: "Sucesso",
-        description: "Produto salvo com sucesso!",
-      });
+    toast({
+      title: "Sucesso",
+      description: "Produto criado com sucesso!",
+    });
 
-      setIsOpen(false);
-    }
+    setIsOpen(false);
 
     setIsLoading(false);
   };
 
   return {
     form,
-    isEditing,
     isLoading,
     isOpen,
     onSubmit,
