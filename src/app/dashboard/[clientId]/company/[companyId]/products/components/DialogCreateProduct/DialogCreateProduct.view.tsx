@@ -26,7 +26,7 @@ import { DialogCreateProductViewProps } from "./DialogCreateProduct.interface";
 export function DialogCreateProductView({
   suppliersList,
 }: DialogCreateProductViewProps) {
-  const { form, isEditing, isLoading, isOpen, onSubmit, onChangeIsOpen } =
+  const { form, isLoading, isOpen, onSubmit, onChangeIsOpen } =
     DialogCreateProductService();
 
   return (
@@ -129,6 +129,7 @@ export function DialogCreateProductView({
             </form>
           </FormProvider>
         </section>
+
         <DialogFooter>
           <Button
             type="submit"
@@ -136,7 +137,7 @@ export function DialogCreateProductView({
             disabled={isLoading}
             className="w-full max-w-40"
           >
-            {isEditing ? "Salvar" : "Cadastrar"}
+            Cadastrar
           </Button>
         </DialogFooter>
       </DialogContent>
