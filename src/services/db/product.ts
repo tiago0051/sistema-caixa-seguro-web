@@ -180,6 +180,18 @@ export async function getProductListCountDB({
   return productsListCountDB;
 }
 
+interface GetProductCDListProps {
+  productId: string;
+}
+
+export async function getProductCDList({ productId }: GetProductCDListProps) {
+  const productCDListDB = await prisma.productStorage.findMany({
+    where: {
+      productId,
+    },
+  });
+}
+
 function productMap(productDB: {
   costPrice: Decimal;
   id: string;

@@ -22,13 +22,20 @@ import {
 import { ComboboxCellule } from "@/components/cellules/Combobox";
 import { DialogDetailsProductService } from "./DialogDetailsProduct.service";
 import { DialogDetailsProductViewProps } from "./DialogDetailsProduct.interface";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export function DialogDetailsProductView({
   product,
   suppliersList,
 }: DialogDetailsProductViewProps) {
-  const { form, isEditing, isLoading, isOpen, onSubmit, onChangeIsOpen } =
-    DialogDetailsProductService();
+  const { isOpen, onChangeIsOpen } = DialogDetailsProductService();
 
   return (
     <Dialog onOpenChange={(state) => onChangeIsOpen(state)} open={isOpen}>
@@ -44,37 +51,63 @@ export function DialogDetailsProductView({
           </DialogDescription>
         </DialogHeader>
 
-        <section className="space-y-1">
-          <div className="flex justify-between">
-            <p className="text-lg font-bold">Nome:</p>
-            <p>{product.name}</p>
+        <section>
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <p className="text-lg font-bold">Nome:</p>
+              <p>{product.name}</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-lg font-bold">Fabricante:</p>
+              <p>{product.supplierName}</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-lg font-bold">Preço custo:</p>
+              <p>
+                {product.costPrice.toLocaleString("pt-br", {
+                  currency: "BRL",
+                  style: "currency",
+                })}
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-lg font-bold">Preço venda:</p>
+              <p>
+                {product.salePrice.toLocaleString("pt-br", {
+                  currency: "BRL",
+                  style: "currency",
+                })}
+              </p>
+            </div>
           </div>
 
-          <div className="flex justify-between">
-            <p className="text-lg font-bold">Fabricante:</p>
-            <p>{product.supplierName}</p>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>CD</TableHead>
+                <TableHead>Quantidade</TableHead>
+              </TableRow>
+            </TableHeader>
 
-          <div className="flex justify-between">
-            <p className="text-lg font-bold">Preço custo:</p>
-            <p>
-              {product.costPrice.toLocaleString("pt-br", {
-                currency: "BRL",
-                style: "currency",
-              })}
-            </p>
-          </div>
-
-          <div className="flex justify-between">
-            <p className="text-lg font-bold">Preço venda:</p>
-            <p>
-              {product.salePrice.toLocaleString("pt-br", {
-                currency: "BRL",
-                style: "currency",
-              })}
-            </p>
-          </div>
+            <TableBody>
+              <TableRow>
+                <TableCell>Testando</TableCell>
+                <TableCell>
+                  <Input type="number" value={0} />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Testando</TableCell>
+                <TableCell>
+                  <Input type="number" value={0} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </section>
+        <DialogFooter>
+          <Button>Salvar</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
