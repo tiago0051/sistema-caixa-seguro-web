@@ -184,12 +184,27 @@ interface GetProductCDListProps {
   productId: string;
 }
 
-export async function getProductCDList({ productId }: GetProductCDListProps) {
+export async function getProductStoragesListDB({
+  productId,
+}: GetProductCDListProps) {
   const productCDListDB = await prisma.productStorage.findMany({
     where: {
       productId,
     },
+    select: {
+      createdAt: true,
+      quantity: true,
+      storageId: true,
+      storage: {
+        select: {
+          name: true,
+        },
+      },
+      updatedAt: true,
+    },
   });
+
+  return productCDListDB.map((productCDDB) => productStorageMap(productCDDB));
 }
 
 function productMap(productDB: {
@@ -212,5 +227,31 @@ function productMap(productDB: {
     quantity: productDB.productStorages
       .map((productStorage) => productStorage.quantity)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+  };
+}
+
+interface ProductStorageMapProps {
+  createdAt: Date;
+  quantity: number;
+  storageId: string;
+  storage: {
+    name: string;
+  };
+  updatedAt: Date;
+}
+
+function productStorageMap({
+  createdAt,
+  quantity,
+  storageId,
+  storage,
+  updatedAt,
+}: ProductStorageMapProps) {
+  return {
+    createdAt,
+    quantity,
+    storageId,
+    storageName: storage.name,
+    updatedAt,
   };
 }

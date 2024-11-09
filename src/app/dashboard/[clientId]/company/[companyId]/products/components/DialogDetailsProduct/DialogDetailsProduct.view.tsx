@@ -33,7 +33,7 @@ import {
 
 export function DialogDetailsProductView({
   product,
-  suppliersList,
+  productStoragesList,
 }: DialogDetailsProductViewProps) {
   const { isOpen, onChangeIsOpen } = DialogDetailsProductService();
 
@@ -90,18 +90,14 @@ export function DialogDetailsProductView({
             </TableHeader>
 
             <TableBody>
-              <TableRow>
-                <TableCell>Testando</TableCell>
-                <TableCell>
-                  <Input type="number" value={0} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Testando</TableCell>
-                <TableCell>
-                  <Input type="number" value={0} />
-                </TableCell>
-              </TableRow>
+              {productStoragesList.map((productStorage) => (
+                <TableRow key={productStorage.storageId}>
+                  <TableCell>{productStorage.storageName}</TableCell>
+                  <TableCell>
+                    <Input type="number" value={productStorage.quantity} />
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </section>

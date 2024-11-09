@@ -5,6 +5,7 @@ import {
   getProductDB,
   getProductListCountDB,
   getProductsListDB,
+  getProductStoragesListDB,
 } from "../db/product";
 
 interface CreateProductProps {
@@ -72,4 +73,16 @@ export async function getProductsList({
     items: productsList,
     totalPages: Math.ceil(productsListCount / take),
   };
+}
+
+interface GetProductStoragesListProps {
+  productId: string;
+}
+
+export async function getProductStoragesList({
+  productId,
+}: GetProductStoragesListProps) {
+  const productStoragesList = await getProductStoragesListDB({ productId });
+
+  return productStoragesList;
 }

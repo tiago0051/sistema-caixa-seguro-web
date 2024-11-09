@@ -13,5 +13,5 @@ export interface DialogDetailsProductServiceReturn {
 
 export interface DialogDetailsProductViewProps {
   product: ProductI;
-  suppliersList: SupplierI[];
+  productStoragesList: ProductStorageI[];
 }
