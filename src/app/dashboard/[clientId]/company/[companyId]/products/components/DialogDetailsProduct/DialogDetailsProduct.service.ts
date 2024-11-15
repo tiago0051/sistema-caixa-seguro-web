@@ -6,21 +6,25 @@ import { createProduct } from "@/services/domain/product";
 import { toast } from "@/components/ui/use-toast";
 import { useParams, useRouter } from "next/navigation";
 import { DialogDetailsProductSchema } from "./DialogDetailsProduct.schema";
-import { DialogDetailsProductServiceReturn } from "./DialogDetailsProduct.interface";
+import {
+  DialogDetailsProductServiceProps,
+  DialogDetailsProductServiceReturn,
+} from "./DialogDetailsProduct.interface";
 import { useState } from "react";
 
-export function DialogDetailsProductService(): DialogDetailsProductServiceReturn {
-  const { clientId, companyId, productId } = useParams() as {
+export function DialogDetailsProductService({
+  productStoragesList,
+}: DialogDetailsProductServiceProps): DialogDetailsProductServiceReturn {
+  const { companyId, productId } = useParams() as {
     clientId: string;
     companyId: string;
     productId: string;
   };
-  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const isEditing = z.string().uuid().safeParse(productId).success;
+  const [storagesList, setStoragesList] =
+    useState<ProductStorageI[]>(productStoragesList);
 
   const form = useForm<z.infer<typeof DialogDetailsProductSchema>>({
     resolver: zodResolver(DialogDetailsProductSchema),
@@ -50,31 +54,44 @@ export function DialogDetailsProductService(): DialogDetailsProductServiceReturn
 
     setIsLoading(true);
 
-    if (!isEditing) {
-      await createProduct({
-        companyId,
-        costPrice: costAmount,
-        name,
-        salePrice: saleAmount,
-        supplierId,
-      });
+    await createProduct({
+      companyId,
+      costPrice: costAmount,
+      name,
+      salePrice: saleAmount,
+      supplierId,
+    });
 
-      toast({
-        title: "Sucesso",
-        description: "Produto salvo com sucesso!",
-      });
+    toast({
+      title: "Sucesso",
+      description: "Produto salvo com sucesso!",
+    });
 
-      setIsOpen(false);
-    }
+    setIsOpen(false);
 
     setIsLoading(false);
   };
 
+  function changeProductStorageQuantity(storageId: string, quantity: number) {
+    setStoragesList((prevState) => {
+      const array = [...prevState];
+
+      const storageIndex = array.findIndex(
+        (productStorage) => productStorage.storageId === storageId
+      );
+
+      array[storageIndex].quantity = quantity;
+
+      return array;
+    });
+  }
+
   return {
+    changeProductStorageQuantity,
     form,
-    isEditing,
     isLoading,
     isOpen,
+    storagesList,
     onSubmit,
     onChangeIsOpen: (isOpenCB) => setIsOpen(isOpenCB),
   };

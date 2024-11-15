@@ -1,15 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { CurrencyInput } from "@/components/ui/currency-input";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FormProvider } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ComboboxCellule } from "@/components/cellules/Combobox";
 import { DialogDetailsProductService } from "./DialogDetailsProduct.service";
 import { DialogDetailsProductViewProps } from "./DialogDetailsProduct.interface";
 import {
@@ -35,7 +25,10 @@ export function DialogDetailsProductView({
   product,
   productStoragesList,
 }: DialogDetailsProductViewProps) {
-  const { isOpen, onChangeIsOpen } = DialogDetailsProductService();
+  const { changeProductStorageQuantity, isOpen, onChangeIsOpen, storagesList } =
+    DialogDetailsProductService({
+      productStoragesList,
+    });
 
   return (
     <Dialog onOpenChange={(state) => onChangeIsOpen(state)} open={isOpen}>
@@ -90,11 +83,20 @@ export function DialogDetailsProductView({
             </TableHeader>
 
             <TableBody>
-              {productStoragesList.map((productStorage) => (
+              {storagesList.map((productStorage) => (
                 <TableRow key={productStorage.storageId}>
                   <TableCell>{productStorage.storageName}</TableCell>
                   <TableCell>
-                    <Input type="number" value={productStorage.quantity} />
+                    <Input
+                      type="number"
+                      value={productStorage.quantity}
+                      onChange={(event) =>
+                        changeProductStorageQuantity(
+                          productStorage.storageId,
+                          event.currentTarget.valueAsNumber
+                        )
+                      }
+                    />
                   </TableCell>
                 </TableRow>
               ))}
