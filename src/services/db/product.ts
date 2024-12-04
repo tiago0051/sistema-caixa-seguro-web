@@ -49,6 +49,26 @@ export async function createProductDB({
   return productMap(productDB);
 }
 
+interface CreateProductStorageProps {
+  storageId: string;
+  productId: string;
+  quantity: number;
+}
+
+export async function createProductStorageDB({
+  productId,
+  storageId,
+  quantity,
+}: CreateProductStorageProps) {
+  await prisma.productStorage.create({
+    data: {
+      quantity,
+      productId,
+      storageId,
+    },
+  });
+}
+
 export async function getProductDB(productId: string) {
   const productDB = await prisma.product.findUnique({
     where: {

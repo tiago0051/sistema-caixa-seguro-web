@@ -20,12 +20,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ComboboxCellule } from "@/components/cellules/Combobox";
 
 export function DialogDetailsProductView({
   product,
   productStoragesList,
+  storagesList,
 }: DialogDetailsProductViewProps) {
-  const { changeProductStorageQuantity, isOpen, onChangeIsOpen, storagesList } =
+  const { changeProductStorageQuantity, isOpen, onChangeIsOpen } =
     DialogDetailsProductService({
       productStoragesList,
     });
@@ -83,7 +85,7 @@ export function DialogDetailsProductView({
             </TableHeader>
 
             <TableBody>
-              {storagesList.map((productStorage) => (
+              {productStoragesList.map((productStorage) => (
                 <TableRow key={productStorage.storageId}>
                   <TableCell>{productStorage.storageName}</TableCell>
                   <TableCell>
@@ -100,6 +102,37 @@ export function DialogDetailsProductView({
                   </TableCell>
                 </TableRow>
               ))}
+
+              <TableRow>
+                <TableCell>
+                  <ComboboxCellule.Root
+                    searchEmpty="CD não encontrado"
+                    searchPlaceholder="Buscar CD"
+                    trigger={
+                      <ComboboxCellule.Trigger placeholder="">
+                        Teste
+                      </ComboboxCellule.Trigger>
+                    }
+                  >
+                    {storagesList.map((storage) => (
+                      <ComboboxCellule.Item
+                        key={storage.id}
+                        selected={false}
+                        onSelect={() => {}}
+                      >
+                        {storage.name}
+                      </ComboboxCellule.Item>
+                    ))}
+                  </ComboboxCellule.Root>
+                </TableCell>
+                <TableCell>
+                  <Input type="number" />
+                </TableCell>
+
+                <TableCell>
+                  <Button variant={"link"}>Adicionar</Button>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </section>

@@ -2,6 +2,7 @@
 
 import {
   createProductDB,
+  createProductStorageDB,
   getProductDB,
   getProductListCountDB,
   getProductsListDB,
@@ -32,6 +33,29 @@ export async function createProduct({
   });
 
   return product;
+}
+
+interface CreateProductStorageProps {
+  productId: string;
+  storageId: string;
+  quantity: number;
+}
+
+export async function createProductStorage({
+  productId,
+  quantity,
+  storageId,
+}: CreateProductStorageProps) {
+  const productStoragesList = await getProductStoragesList({ productId });
+
+  const productStorageExists = productStoragesList.some(
+    (productStorage) => productStorage.storageId === storageId
+  );
+
+  if (productStorageExists)
+    throw new Error("Esse CD já está vinculádo ao produto");
+
+  await createProductStorageDB({ productId, storageId, quantity });
 }
 
 export async function getProduct(productId: string) {

@@ -7,7 +7,7 @@ interface GetStoragesListDBProps {
     storageCod?: string;
     storageName?: string;
   };
-  take: number;
+  take: number | null;
 }
 
 export async function getStoragesListDB({
@@ -17,8 +17,8 @@ export async function getStoragesListDB({
   take,
 }: GetStoragesListDBProps) {
   const storagesListDB = await prisma.storage.findMany({
-    take,
-    skip: page * take,
+    take: take ?? undefined,
+    skip: page * (take ?? 0),
     orderBy: {
       name: "asc",
     },

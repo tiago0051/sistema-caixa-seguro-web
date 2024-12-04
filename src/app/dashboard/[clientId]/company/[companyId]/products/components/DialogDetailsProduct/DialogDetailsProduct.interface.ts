@@ -11,12 +11,11 @@ export interface DialogDetailsProductServiceReturn {
   form: UseFormReturn<z.infer<typeof DialogDetailsProductSchema>>;
   isLoading: boolean;
   isOpen: boolean;
-  storagesList: ProductStorageI[];
   onChangeIsOpen: (isOpenCB: boolean) => void;
-  onSubmit: SubmitHandler<z.infer<typeof DialogDetailsProductSchema>>;
 }
 
 export interface DialogDetailsProductViewProps {
   product: ProductI;
   productStoragesList: ProductStorageI[];
+  storagesList: IStorage[];
 }

@@ -13,7 +13,7 @@ interface GetStoragesListProps {
     storageCod?: string;
     storageName?: string;
   };
-  take?: number;
+  take?: number | null;
 }
 
 export async function getStoragesList({
@@ -35,7 +35,7 @@ export async function getStoragesList({
 
   return {
     items: storagesList,
-    totalPages: Math.ceil(storagesListCount / take),
+    totalPages: Math.ceil(storagesListCount / (take ?? 0)),
   };
 }
 
