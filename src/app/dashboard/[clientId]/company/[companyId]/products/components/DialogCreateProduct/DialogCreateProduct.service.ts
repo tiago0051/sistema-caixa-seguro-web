@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { createProduct } from "@/services/domain/product";
 import { toast } from "@/components/ui/use-toast";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { DialogCreateProductSchema } from "./DialogCreateProduct.schema";
 import { DialogCreateProductServiceReturn } from "./DialogCreateProduct.interface";
 import { useState } from "react";
@@ -13,7 +13,6 @@ export function DialogCreateProductService(): DialogCreateProductServiceReturn {
   const { companyId } = useParams() as {
     companyId: string;
   };
-  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

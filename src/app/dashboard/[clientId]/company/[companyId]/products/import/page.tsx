@@ -12,9 +12,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { createProduct } from "@/services/domain/product";
+import { SupplierXml } from "./types/SupplierXml";
+import { useParams } from "next/navigation";
+import { cnpjFormat } from "@/utils/stringFormat";
 
 export default function ImportProductsPage() {
+  const { companyId } = useParams() as {
+    companyId: string;
+  };
+
   const [products, setProducts] = useState<ProductXml[]>([]);
+  const [supplier, setSupplier] = useState<SupplierXml | null>(null);
 
   async function readFile(file: File) {
     return new Promise<string>((resolve, reject) => {
@@ -36,6 +46,7 @@ export default function ImportProductsPage() {
       const xmlDom = new DOMParser().parseFromString(xml, "text/xml");
 
       const products = xmlDom.querySelectorAll("det");
+      const issuer = xmlDom.querySelector("emit");
 
       products.forEach((product) => {
         const prod = product.querySelector("prod");
@@ -54,8 +65,28 @@ export default function ImportProductsPage() {
         const newProduct = new ProductXml(description, ncm, price, quantity);
         setProducts((prevProducts) => [...prevProducts, newProduct]);
       });
+
+      const supplierName = issuer?.querySelector("xNome")?.textContent || "";
+      const supplierTaxId = issuer?.querySelector("CNPJ")?.textContent || null;
+
+      setSupplier(new SupplierXml(supplierName, supplierTaxId));
     }
   }
+
+  async function handleImportClick() {
+    for (const product of products) {
+      await createProduct({
+        companyId,
+        costPrice: product.price,
+        name: product.description,
+        salePrice: product.price,
+        supplierId,
+      });
+    }
+  }
+
+  const hasSupplier = supplier !== null;
+  const hasProducts = products.length > 0;
 
   return (
     <div className="grid gap-8">
@@ -65,26 +96,57 @@ export default function ImportProductsPage() {
         <Input type="file" accept=".xml" onChange={handleFileChange} />
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Descrição</TableHead>
-            <TableHead>NCM</TableHead>
-            <TableHead>Valor de custo</TableHead>
-            <TableHead>Quantidade</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product, index) => (
-            <TableRow key={index}>
-              <TableCell>{product.description}</TableCell>
-              <TableCell>{product.ncm}</TableCell>
-              <TableCell>{product.price}</TableCell>
-              <TableCell>{product.quantity}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {hasSupplier && (
+        <div>
+          <h3>Fornecedor</h3>
+          <p>Nome: {supplier.name}</p>
+          <p>CNPJ: {cnpjFormat(supplier.taxId!)}</p>
+        </div>
+      )}
+
+      {hasProducts && (
+        <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Descrição</TableHead>
+                <TableHead>NCM</TableHead>
+                <TableHead>Valor UN.</TableHead>
+                <TableHead>Quantidade</TableHead>
+                <TableHead>Valor Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.map((product, index) => (
+                <TableRow key={index}>
+                  <TableCell>{product.description}</TableCell>
+                  <TableCell>{product.ncm}</TableCell>
+                  <TableCell>
+                    {product.price.toLocaleString("pt-br", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </TableCell>
+                  <TableCell>{product.quantity}</TableCell>
+                  <TableCell>
+                    {(product.price * product.quantity).toLocaleString(
+                      "pt-br",
+                      {
+                        style: "currency",
+                        currency: "BRL",
+                      }
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div className="flex justify-end">
+            <Button>Importar</Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
