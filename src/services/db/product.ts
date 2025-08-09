@@ -1,5 +1,6 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import prisma from "../services/prisma";
+import { ProductQuery } from "./query/ProductQuery";
 
 interface CreateProductDBProps {
   companyId: string;
@@ -7,6 +8,8 @@ interface CreateProductDBProps {
   name: string;
   salePrice: number;
   supplierId: string;
+  supplierCode?: string;
+  ncm?: string;
 }
 
 export async function createProductDB({
@@ -15,9 +18,13 @@ export async function createProductDB({
   name,
   salePrice,
   supplierId,
+  supplierCode,
+  ncm,
 }: CreateProductDBProps) {
   const productDB = await prisma.product.create({
     data: {
+      ncm,
+      supplierCode,
       costPrice,
       name,
       salePrice,
@@ -32,18 +39,7 @@ export async function createProductDB({
         },
       },
     },
-    select: {
-      costPrice: true,
-      id: true,
-      name: true,
-      salePrice: true,
-      supplier: true,
-      productStorages: {
-        select: {
-          quantity: true,
-        },
-      },
-    },
+    select: ProductQuery,
   });
 
   return productMap(productDB);
@@ -74,18 +70,7 @@ export async function getProductDB(productId: string) {
     where: {
       id: productId,
     },
-    select: {
-      costPrice: true,
-      id: true,
-      name: true,
-      salePrice: true,
-      supplier: true,
-      productStorages: {
-        select: {
-          quantity: true,
-        },
-      },
-    },
+    select: ProductQuery,
   });
 
   return productDB && productMap(productDB);
@@ -139,18 +124,7 @@ export async function getProductsListDB({
         },
       ],
     },
-    select: {
-      costPrice: true,
-      id: true,
-      name: true,
-      salePrice: true,
-      supplier: true,
-      productStorages: {
-        select: {
-          quantity: true,
-        },
-      },
-    },
+    select: ProductQuery,
   });
 
   return productsListDB.map((productDB) => productMap(productDB));
@@ -225,6 +199,21 @@ export async function getProductStoragesListDB({
   });
 
   return productCDListDB.map((productCDDB) => productStorageMap(productCDDB));
+}
+
+export async function getProductBySupplierCodeDB(
+  supplierCode: string,
+  supplierId: string
+) {
+  const productDB = await prisma.product.findFirst({
+    where: {
+      supplierCode,
+      supplierId,
+    },
+    select: ProductQuery,
+  });
+
+  return productDB && productMap(productDB);
 }
 
 function productMap(productDB: {

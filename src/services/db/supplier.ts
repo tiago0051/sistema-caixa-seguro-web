@@ -4,6 +4,17 @@ interface GetSuppliersListDBProps {
   companyId: string;
 }
 
+interface GetSupplierByTaxIdDBProps {
+  taxId: string;
+  companyId: string;
+}
+
+interface CreateSupplierDBProps {
+  name: string;
+  taxId: string;
+  companyId: string;
+}
+
 export async function getSuppliersListDB({
   companyId,
 }: GetSuppliersListDBProps) {
@@ -17,6 +28,36 @@ export async function getSuppliersListDB({
   });
 
   return suppliersListDB.map((supplierDB) => supplierMap(supplierDB));
+}
+
+export async function getSupplierByTaxIdDB({
+  taxId,
+  companyId,
+}: GetSupplierByTaxIdDBProps) {
+  const supplier = await prisma.supplier.findUnique({
+    where: {
+      taxId,
+      companyId,
+    },
+  });
+
+  return supplier ? supplierMap(supplier) : null;
+}
+
+export async function createSupplierDB({
+  name,
+  taxId,
+  companyId,
+}: CreateSupplierDBProps) {
+  const supplier = await prisma.supplier.create({
+    data: {
+      name,
+      taxId,
+      companyId,
+    },
+  });
+
+  return supplierMap(supplier);
 }
 
 interface SupplierMapProps {

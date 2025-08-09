@@ -3,6 +3,7 @@
 import {
   createProductDB,
   createProductStorageDB,
+  getProductBySupplierCodeDB,
   getProductDB,
   getProductListCountDB,
   getProductsListDB,
@@ -15,6 +16,8 @@ interface CreateProductProps {
   name: string;
   salePrice: number;
   supplierId: string;
+  supplierCode?: string;
+  ncm?: string;
 }
 
 export async function createProduct({
@@ -23,6 +26,8 @@ export async function createProduct({
   name,
   salePrice,
   supplierId,
+  supplierCode,
+  ncm,
 }: CreateProductProps) {
   const product = await createProductDB({
     companyId,
@@ -30,6 +35,8 @@ export async function createProduct({
     name,
     salePrice,
     supplierId,
+    supplierCode,
+    ncm,
   });
 
   return product;
@@ -60,6 +67,15 @@ export async function createProductStorage({
 
 export async function getProduct(productId: string) {
   const product = await getProductDB(productId);
+
+  return product;
+}
+
+export async function getProductBySupplierCode(
+  supplierCode: string,
+  supplierId: string
+) {
+  const product = await getProductBySupplierCodeDB(supplierCode, supplierId);
 
   return product;
 }
