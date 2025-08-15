@@ -8,6 +8,7 @@ import {
   getProductListCountDB,
   getProductsListDB,
   getProductStoragesListDB,
+  saveProductStorageDB,
 } from "../db/product";
 
 interface CreateProductProps {
@@ -48,21 +49,24 @@ interface CreateProductStorageProps {
   quantity: number;
 }
 
-export async function createProductStorage({
+export async function addProductInStorage({
   productId,
   quantity,
   storageId,
 }: CreateProductStorageProps) {
   const productStoragesList = await getProductStoragesList({ productId });
 
-  const productStorageExists = productStoragesList.some(
+  const productStorageExists = productStoragesList.find(
     (productStorage) => productStorage.storageId === storageId
   );
 
-  if (productStorageExists)
-    throw new Error("Esse CD já está vinculádo ao produto");
+  if (productStorageExists) {
+    productStorageExists.quantity += quantity;
 
-  await createProductStorageDB({ productId, storageId, quantity });
+    await saveProductStorage(productId, productStorageExists);
+  } else {
+    await createProductStorageDB({ productId, storageId, quantity });
+  }
 }
 
 export async function getProduct(productId: string) {
@@ -125,4 +129,11 @@ export async function getProductStoragesList({
   const productStoragesList = await getProductStoragesListDB({ productId });
 
   return productStoragesList;
+}
+
+export async function saveProductStorage(
+  productId: string,
+  productStorage: ProductStorageI
+) {
+  return saveProductStorageDB(productId, productStorage);
 }

@@ -201,6 +201,23 @@ export async function getProductStoragesListDB({
   return productCDListDB.map((productCDDB) => productStorageMap(productCDDB));
 }
 
+export async function saveProductStorageDB(
+  productId: string,
+  productStorage: ProductStorageI
+) {
+  await prisma.productStorage.update({
+    where: {
+      productId_storageId: {
+        productId,
+        storageId: productStorage.storageId,
+      },
+    },
+    data: {
+      quantity: productStorage.quantity,
+    },
+  });
+}
+
 export async function getProductBySupplierCodeDB(
   supplierCode: string,
   supplierId: string

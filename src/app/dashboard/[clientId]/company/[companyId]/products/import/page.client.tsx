@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
+  addProductInStorage,
   createProduct,
   getProductBySupplierCode,
 } from "@/services/domain/product";
@@ -107,7 +108,7 @@ export function ImportProductsPageClient({
   }
 
   async function handleImportClick() {
-    if (supplier) {
+    if (supplier && storageSelected) {
       let supplierEntity = await getSupplierByTaxId({
         taxId: supplier.taxId,
         companyId,
@@ -128,7 +129,7 @@ export function ImportProductsPageClient({
         );
 
         if (!productEntity) {
-          let productEntity = await createProduct({
+          productEntity = await createProduct({
             companyId,
             costPrice: product.price,
             name: product.description,
@@ -138,6 +139,12 @@ export function ImportProductsPageClient({
             ncm: product.ncm,
           });
         }
+
+        await addProductInStorage({
+          productId: productEntity.id,
+          storageId: storageSelected.id,
+          quantity: product.quantity,
+        });
       }
 
       toast({
@@ -162,15 +169,18 @@ export function ImportProductsPageClient({
     <div className="grid gap-8">
       <HeaderOrganism title={"Importar produtos"} />
 
-      <div className="grid grid-cols-4">
-        <Input type="file" accept=".xml" onChange={handleFileChange} />
+      <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid gap-2">
+          <Label>Selecione o XML</Label>
+          <Input type="file" accept=".xml" onChange={handleFileChange} />
+        </div>
 
         <div className="grid gap-2">
           <Label>CD</Label>
 
           <ComboboxCellule.Root
             trigger={
-              <ComboboxCellule.Trigger placeholder="Selecione o fornecedor">
+              <ComboboxCellule.Trigger placeholder="Selecione o centro de distribuição">
                 {storageSelected && (
                   <>
                     {storageSelected.name}
@@ -221,7 +231,7 @@ export function ImportProductsPageClient({
           <CardHeader>
             <CardTitle>Produtos</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="grid">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -273,7 +283,7 @@ export function ImportProductsPageClient({
 
           <CardFooter>
             <Button
-              disabled={!hasDocumentSelected}
+              disabled={!hasDocumentSelected || !storageSelected}
               onClick={() => handleImportClick()}
             >
               Importar
