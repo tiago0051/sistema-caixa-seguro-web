@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/card";
 import { createSupplier, getSupplierByTaxId } from "@/services/domain/supplier";
 import { useToast } from "@/components/ui/use-toast";
-import { Select } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { ComboboxCellule } from "@/components/cellules/Combobox";
 import { FiX } from "react-icons/fi";
@@ -48,6 +47,7 @@ export function ImportProductsPageClient({
   const { toast } = useToast();
   const router = useRouter();
 
+  const [storageSelected, setStorageSelected] = useState<IStorage | null>(null);
   const [products, setProducts] = useState<ProductXml[]>([]);
   const [supplier, setSupplier] = useState<SupplierXml | null>(null);
 
@@ -171,9 +171,9 @@ export function ImportProductsPageClient({
           <ComboboxCellule.Root
             trigger={
               <ComboboxCellule.Trigger placeholder="Selecione o fornecedor">
-                {supplierSelected && (
+                {storageSelected && (
                   <>
-                    {supplierSelected.name}
+                    {storageSelected.name}
                     <FiX className="text-xl text-red-500" />
                   </>
                 )}
@@ -181,12 +181,12 @@ export function ImportProductsPageClient({
             }
             searchEmpty="Fornecedor não encontrado"
             searchPlaceholder="Pesquise pelo fornecedor"
-            selectClean={() => setSupplierId("")}
+            selectClean={() => setStorageSelected(null)}
           >
-            {suppliersList.map((supplier) => (
+            {storagesList.map((supplier) => (
               <ComboboxCellule.Item
-                onSelect={() => setSupplierId(supplier.id)}
-                selected={supplierId === supplier.id}
+                onSelect={() => setStorageSelected(supplier)}
+                selected={storageSelected?.id === supplier.id}
                 value={supplier.name}
                 key={supplier.id}
               >

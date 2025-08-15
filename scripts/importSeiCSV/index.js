@@ -99,7 +99,7 @@ connect()
       productsLength++;
 
       await pg.query(
-        "INSERT INTO product (id, name, cost_price, sale_price, company_id, supplier_id) VALUES ($1, $2, $3, $4, $5, $6)",
+        "INSERT INTO product (id, name, cost_price, sale_price, company_id, supplier_id, ncm) VALUES ($1, $2, $3, $4, $5, $6, $7)",
         [
           id,
           dadosLinha.DesPro,
@@ -107,6 +107,7 @@ connect()
           Number(dadosLinha.PcoVen.replace(",", ".")),
           companyId,
           grupos.find((grupo) => grupo.codGru === dadosLinha.CodGru).id,
+          dadosLinha.NCM_SH,
         ]
       );
     });
