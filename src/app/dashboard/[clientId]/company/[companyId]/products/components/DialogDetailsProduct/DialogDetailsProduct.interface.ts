@@ -1,4 +1,4 @@
-import { SubmitHandler, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { DialogDetailsProductSchema } from "./DialogDetailsProduct.schema";
 import { z } from "zod";
 
@@ -17,5 +17,4 @@ export interface DialogDetailsProductServiceReturn {
 export interface DialogDetailsProductViewProps {
   product: ProductI;
   productStoragesList: ProductStorageI[];
-  storagesList: IStorage[];
 }

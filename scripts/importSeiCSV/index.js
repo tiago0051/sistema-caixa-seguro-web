@@ -110,6 +110,22 @@ connect()
           dadosLinha.NCM_SH,
         ]
       );
+
+      const quantity = Number(dadosLinha.EstAtu);
+
+      if (Number.isNaN(quantity)) {
+        console.log(
+          dadosLinha.DesPro,
+          "Quantidade inválida:",
+          dadosLinha.EstAtu
+        );
+        return;
+      }
+
+      await pg.query(
+        "INSERT INTO product_storage (product_id, storage_id, quantity) VALUES ($1, $2, $3)",
+        [id, process.env.STORAGE_ID, quantity]
+      );
     });
 
     console.log(
