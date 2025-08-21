@@ -4,4 +4,5 @@ import { FormSchemaType } from "./page.schema";
 export interface SignInDTO {
   formSubmit: SubmitHandler<FormSchemaType>;
   form: UseFormReturn<FormSchemaType>;
+  isPending: boolean;
 }

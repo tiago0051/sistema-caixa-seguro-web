@@ -7,8 +7,16 @@ import Link from "next/link";
 import { SignInDTO } from "./page.dto";
 import { useFormStatus } from "react-dom";
 import { FiLoader } from "react-icons/fi";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-export default function SignInView({ formSubmit, form }: SignInDTO) {
+export default function SignInView({ formSubmit, form, isPending }: SignInDTO) {
   const { register, handleSubmit } = form;
   return (
     <div className="w-full grid gap-8">
@@ -19,15 +27,39 @@ export default function SignInView({ formSubmit, form }: SignInDTO) {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(formSubmit)} className="grid gap-4 w-full">
-        <fieldset className="grid gap-2">
-          <Label htmlFor="email">E-mail</Label>
-          <Input type="email" {...register("email")} />
-        </fieldset>
-        <fieldset className="grid gap-2">
-          <Label htmlFor="password">Senha</Label>
-          <Input type="password" {...register("password")} />
-        </fieldset>
+      <form
+        onSubmit={handleSubmit(formSubmit)}
+        noValidate
+        className="grid gap-4 w-full"
+      >
+        <Form {...form}>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
+                  <Input type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Senha</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Form>
         <div className="flex justify-end">
           <Link
             href="/auth/forgotPassword"
@@ -36,20 +68,19 @@ export default function SignInView({ formSubmit, form }: SignInDTO) {
             Esqueceu sua senha?
           </Link>
         </div>
-        <SubmitButton />
+        <SubmitButton isPending={isPending} />
       </form>
     </div>
   );
 }
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ isPending }: { isPending: boolean }) {
   return (
     <>
-      <Button type="submit" disabled={pending}>
-        {pending ? (
+      <Button type="submit" disabled={isPending}>
+        {isPending ? (
           <FiLoader
-            data-loading={pending}
+            data-loading={isPending}
             className="data-[loading=true]:animate-spin"
           />
         ) : (

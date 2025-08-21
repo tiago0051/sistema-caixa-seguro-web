@@ -17,15 +17,13 @@ export async function authenticateAction(
       password,
       redirectTo: redirectTo || "/",
     });
+
+    return "Success";
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return "E-mail e/ou senha incorreto(s).";
-        default:
-          return "Something went wrong.";
-      }
+      return error.type;
     }
+
     throw error;
   }
 }
