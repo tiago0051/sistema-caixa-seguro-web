@@ -8,7 +8,8 @@ const companyId = process.env.COMPANY_ID;
 const gruposCSV = "CDGRUPOS.csv";
 const produtosCSV = "PRODUTOS.csv";
 
-async function loadGruposCSV(callback) {
+async function loadGruposCSV() {
+  const suppliers = [];
   return new Promise((resolve, reject) => {
     // Ler o arquivo CSV
     fs.createReadStream(gruposCSV)
@@ -19,15 +20,16 @@ async function loadGruposCSV(callback) {
       .pipe(csv.parse({ columns: true, delimiter: ";" }))
 
       // Acionar o evento data quando ler uma linha e executar a função enviando os dados como parâmetro
-      .on("data", async (dadosLinha) => {
-        await callback(dadosLinha);
+      .on("data", (dadosLinha) => {
+        suppliers.push(dadosLinha);
       })
-      .on("end", () => resolve())
+      .on("finish", () => resolve(suppliers))
       .on("error", (error) => reject(error));
   });
 }
 
-async function loadCSV(callback) {
+async function loadCSV() {
+  const products = [];
   return new Promise((resolve, reject) => {
     // Ler o arquivo CSV
     fs.createReadStream(produtosCSV)
@@ -38,15 +40,16 @@ async function loadCSV(callback) {
       .pipe(csv.parse({ columns: true, delimiter: ";" }))
 
       // Acionar o evento data quando ler uma linha e executar a função enviando os dados como parâmetro
-      .on("data", async (dadosLinha) => {
-        await callback(dadosLinha);
+      .on("data", (dadosLinha) => {
+        products.push(dadosLinha);
       })
-      .on("end", () => resolve())
+      .on("finish", () => resolve(products))
       .on("error", (error) => reject(error));
   });
 }
 
 async function resetDB(pg) {
+  await pg.query("DELETE FROM product_storage");
   await pg.query("DELETE FROM product");
   await pg.query("DELETE FROM supplier");
 }
@@ -71,65 +74,83 @@ async function connect() {
   return pool.connect();
 }
 
-connect()
-  .then(async (pg) => {
-    await resetDB(pg);
+async function createSuppliers(connection) {
+  const grupos = [];
+  let suppliersCount = 0;
 
-    const grupos = [];
+  const suppliersCsv = await loadGruposCSV();
 
-    await loadGruposCSV(async (dadosLinha) => {
-      const id = uuidv4();
+  for (const supplier of suppliersCsv) {
+    suppliersCount++;
 
-      grupos.push({
-        id,
-        codGru: dadosLinha.CodGru,
-      });
-
-      await pg.query(
-        "INSERT INTO supplier (id, name, company_id) VALUES ($1, $2, $3)",
-        [id, dadosLinha.DesGru, companyId]
-      );
+    const id = uuidv4();
+    grupos.push({
+      id,
+      codGru: supplier.CodGru,
     });
 
-    let productsLength = 0;
+    await connection.query(
+      "INSERT INTO supplier (id, name, company_id) VALUES ($1, $2, $3)",
+      [id, supplier.DesGru, companyId]
+    );
 
-    await loadCSV(async (dadosLinha) => {
-      const id = uuidv4();
+    console.log("- Fornecedor:", suppliersCount, "/", suppliersCsv.length);
+  }
 
-      productsLength++;
+  return grupos;
+}
 
-      await pg.query(
-        "INSERT INTO product (id, name, cost_price, sale_price, company_id, supplier_id, ncm) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-        [
-          id,
-          dadosLinha.DesPro,
-          Number(dadosLinha.PcoCus.replace(",", ".")),
-          Number(dadosLinha.PcoVen.replace(",", ".")),
-          companyId,
-          grupos.find((grupo) => grupo.codGru === dadosLinha.CodGru).id,
-          dadosLinha.NCM_SH,
-        ]
-      );
+async function createProducts(connection, grupos) {
+  const products = await loadCSV();
+  let productCount = 0;
 
-      const quantity = Number(dadosLinha.EstAtu);
+  for (const dadosLinha of products) {
+    productCount++;
 
-      if (Number.isNaN(quantity)) {
-        console.log(
-          dadosLinha.DesPro,
-          "Quantidade inválida:",
-          dadosLinha.EstAtu
-        );
-        return;
-      }
+    const id = uuidv4();
 
-      await pg.query(
+    await connection.query(
+      "INSERT INTO product (id, name, cost_price, sale_price, company_id, supplier_id, ncm) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      [
+        id,
+        dadosLinha.DesPro,
+        Number(dadosLinha.PcoCus.replace(",", ".")),
+        Number(dadosLinha.PcoVen.replace(",", ".")),
+        companyId,
+        grupos.find((grupo) => grupo.codGru === dadosLinha.CodGru).id,
+        dadosLinha.NCM_SH,
+      ]
+    );
+
+    const quantity = Number(dadosLinha.EstAtu);
+
+    if (Number.isNaN(quantity)) {
+      console.log(dadosLinha.DesPro, "Quantidade inválida:", dadosLinha.EstAtu);
+    } else {
+      await connection.query(
         "INSERT INTO product_storage (product_id, storage_id, quantity) VALUES ($1, $2, $3)",
         [id, process.env.STORAGE_ID, quantity]
       );
-    });
+    }
 
-    console.log(
-      `total categorias: ${grupos.length}, total produtos: ${productsLength}`
-    );
-  })
-  .catch((error) => console.log(error));
+    console.log("- Produto:", productCount, "/", products.length);
+  }
+}
+
+async function main() {
+  const connection = await connect();
+
+  console.log("Resetando banco de dados");
+  await resetDB(connection);
+  console.log("Banco de dados resetado");
+
+  console.log("Criando fornecedores");
+  const suppliers = await createSuppliers(connection);
+  console.log("Fornecedores criados");
+
+  console.log("Criando produtos");
+  await createProducts(connection, suppliers);
+  console.log("Produtos criados");
+}
+
+main();
