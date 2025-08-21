@@ -36,6 +36,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
+    "cross-spawn": "^7.0.6",
     "csv": "^6.3.10",
     "date-fns": "^3.3.1",
     "lucide-react": "^0.453.0",
