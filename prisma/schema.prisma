@@ -141,12 +141,13 @@ model Account {
 }
 
 model Supplier {
-  id        String    @id @default(uuid())
-  name      String
-  taxId     String?   @unique @db.VarChar(14)
-  company   Company   @relation(fields: [companyId], references: [id])
-  companyId String    @map("company_id")
-  products  Product[]
+  id          String    @id @default(uuid())
+  description String
+  name        String
+  taxId       String?   @unique @db.VarChar(14)
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   String    @map("company_id")
+  products    Product[]
 
   @@map("supplier")
 }

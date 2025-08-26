@@ -67,10 +67,14 @@
     "eslint-config-next": "^15.0.0-rc.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   },
   "main": "index.js",
   "repository": "https://github.com/tiago0051/sistema-caixa-seguro-web.git",
   "author": "Tiago Salgado <tiagosalgado2002@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed/seed.ts"
+  }
 }

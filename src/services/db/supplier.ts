@@ -63,11 +63,13 @@ export async function createSupplierDB({
 interface SupplierMapProps {
   id: string;
   name: string;
+  taxId: string | null;
 }
 
-function supplierMap({ id, name }: SupplierMapProps) {
+function supplierMap({ id, name, taxId }: SupplierMapProps) {
   return {
     id,
     name,
+    taxId,
   };
 }
