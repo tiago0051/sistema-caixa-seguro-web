@@ -27,6 +27,22 @@ export function cpfMask(val: string) {
   return cpfValue?.substring(0, 20);
 }
 
+export function supplierTaxIdFormat(text?: string | null) {
+  let taxIdValue = text?.trim();
+
+  if (taxIdValue) {
+    taxIdValue = taxIdValue.replace(/\D/g, "");
+
+    if (taxIdValue.length <= 11) {
+      taxIdValue = cpfMask(taxIdValue);
+    } else {
+      taxIdValue = cnpjFormat(taxIdValue);
+    }
+  }
+
+  return taxIdValue;
+}
+
 export function getNameInitials(text: string) {
   const splittedName = text.split(" ");
 

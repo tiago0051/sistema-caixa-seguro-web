@@ -4,7 +4,6 @@ import { ProductsListTableSkeletonOrganism } from "./organisms/ProductsListTable
 import { ProductsFilterOrganism } from "./organisms/ProductsFilter";
 import { HeaderOrganism } from "@/components/organisms/Header";
 import { getSuppliersList } from "@/services/domain/supplier";
-import { DialogCreateProduct } from "./input/components/DialogCreateProduct/DialogCreateProduct";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

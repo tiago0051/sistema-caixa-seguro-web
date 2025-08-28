@@ -19,6 +19,7 @@ interface CreateSupplier {
   name: string;
   taxId: string;
   companyId: string;
+  description: string;
 }
 
 export async function getSuppliersList({ companyId }: GetSuppliersListDB) {
@@ -40,8 +41,14 @@ export async function createSupplier({
   name,
   taxId,
   companyId,
+  description,
 }: CreateSupplier) {
-  const supplier = await createSupplierDB({ name, taxId, companyId });
+  const supplier = await createSupplierDB({
+    name,
+    taxId,
+    companyId,
+    description,
+  });
 
   return supplier;
 }

@@ -1,6 +1,7 @@
 import { HeaderOrganism } from "@/components/organisms/Header";
 import { getStoragesList } from "@/services/domain/storage";
 import InputProductPageClient from "./page.client";
+import { getSuppliersList } from "@/services/domain/supplier";
 
 type InputProductPageProps = {
   params: Params;
@@ -16,12 +17,15 @@ export default async function InputProductPage({
     take: null,
     searchParams: {},
   });
+
+  const suppliersList = await getSuppliersList({
+    companyId,
+  });
   return (
     <div className="grid gap-8">
-      <HeaderOrganism title={"Entrada de produtos"} />
-
       <InputProductPageClient
         storagesList={storagesList}
+        suppliersList={suppliersList}
         companyId={companyId}
       />
     </div>

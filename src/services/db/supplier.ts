@@ -13,6 +13,7 @@ interface CreateSupplierDBProps {
   name: string;
   taxId: string;
   companyId: string;
+  description: string;
 }
 
 export async function getSuppliersListDB({
@@ -48,12 +49,14 @@ export async function createSupplierDB({
   name,
   taxId,
   companyId,
+  description,
 }: CreateSupplierDBProps) {
   const supplier = await prisma.supplier.create({
     data: {
       name,
       taxId,
       companyId,
+      description,
     },
   });
 
@@ -64,12 +67,19 @@ interface SupplierMapProps {
   id: string;
   name: string;
   taxId: string | null;
+  description: string;
 }
 
-function supplierMap({ id, name, taxId }: SupplierMapProps) {
+function supplierMap({
+  id,
+  name,
+  taxId,
+  description,
+}: SupplierMapProps): SupplierI {
   return {
     id,
     name,
     taxId,
+    description,
   };
 }

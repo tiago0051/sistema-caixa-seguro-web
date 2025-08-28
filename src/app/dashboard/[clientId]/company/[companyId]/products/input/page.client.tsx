@@ -1,6 +1,17 @@
 "use client";
 
 import { ComboboxCellule } from "@/components/cellules/Combobox";
+import { FiX } from "react-icons/fi";
+import { Button } from "@/components/ui/button";
+import { InputProduct } from "./types/InputProduct";
+import { InputSupplier } from "./types/InputSupplier";
+import { useRef, useState, useTransition } from "react";
+import { toast } from "@/components/ui/use-toast";
+import { getSupplierByTaxId } from "@/services/domain/supplier";
+import { getProductBySupplierCode } from "@/services/domain/product";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { InputFormSchema, InputFormValues } from "./page.schema";
 import {
   Form,
   FormControl,
@@ -9,9 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FiX } from "react-icons/fi";
+import { HeaderOrganism } from "@/components/organisms/Header";
 import {
   Card,
   CardContent,
@@ -19,39 +28,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { InputProduct } from "./types/InputProduct";
-import { InputSupplier } from "./types/InputSupplier";
-import { useRef, useState } from "react";
-import { toast } from "@/components/ui/use-toast";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { getSupplierByTaxId } from "@/services/domain/supplier";
-import { Label } from "@/components/ui/label";
-import { SupplierRow } from "./components/SupplierRow";
+import { Input } from "@/components/ui/input";
+import { supplierTaxIdFormat } from "@/utils/stringFormat";
+import { findSupplierByTaxId } from "./page.action";
+import { DialogSelectSupplier } from "./components/DialogSelectSupplier";
 
 type InputProductPageClientProps = {
   storagesList: IStorage[];
+  suppliersList: SupplierI[];
   companyId: string;
 };
 
 export default function InputProductPageClient({
   storagesList,
   companyId,
+  suppliersList,
 }: InputProductPageClientProps) {
   const inputFileXmlRef = useRef<HTMLInputElement | null>(null);
 
-  const [storageSelected, setStorageSelected] = useState<IStorage | null>(null);
+  const [isLoadingFindTaxId, startTransitionFindTaxId] = useTransition();
 
-  const [suppliers, setSuppliers] = useState<InputSupplier[]>([]);
-  const [products, setProducts] = useState<InputProduct[]>([]);
+  const form = useForm<InputFormValues>({
+    resolver: zodResolver(InputFormSchema),
+    defaultValues: {
+      supplier: {
+        taxId: "",
+        description: "",
+        name: "",
+        supplierId: null,
+      },
+    },
+  });
 
   async function readFile(file: File) {
     return new Promise<string>((resolve) => {
@@ -85,6 +92,42 @@ export default function InputProductPageClient({
     return new InputSupplier(null, null, supplierName, supplierTaxId);
   }
 
+  async function getProductFromXml(element: Element, supplier: InputSupplier) {
+    const prod = element.querySelector("prod");
+
+    const code = prod?.querySelector("cProd")?.textContent || "";
+    const description = prod?.querySelector("xProd")?.textContent || "";
+    const ncm = prod?.querySelector("NCM")?.textContent || "";
+    const price = parseInt(
+      prod?.querySelector("vUnCom")?.textContent || "0",
+      10
+    );
+    const quantity = parseInt(
+      prod?.querySelector("qCom")?.textContent || "0",
+      10
+    );
+
+    let product: ProductI | null = null;
+
+    if (supplier.supplierId) {
+      product = await getProductBySupplierCode(code, supplier.supplierId);
+    }
+
+    const newProduct = new InputProduct(
+      null,
+      product?.id ?? null,
+      supplier.id,
+      code,
+      description,
+      ncm,
+      price,
+      quantity,
+      product?.quantity
+    );
+
+    return newProduct;
+  }
+
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
@@ -106,123 +149,198 @@ export default function InputProductPageClient({
 
       const supplierXml = await getSupplierFromXml(issuer);
 
-      products.forEach((product) => {
-        const prod = product.querySelector("prod");
+      products.forEach(async (productElement) => {
+        const product = await getProductFromXml(productElement, supplierXml);
 
-        const code = prod?.querySelector("cProd")?.textContent || "";
-        const description = prod?.querySelector("xProd")?.textContent || "";
-        const ncm = prod?.querySelector("NCM")?.textContent || "";
-        const price = parseInt(
-          prod?.querySelector("vUnCom")?.textContent || "0",
-          10
-        );
-        const quantity = parseInt(
-          prod?.querySelector("qCom")?.textContent || "0",
-          10
-        );
+        // setSuppliers((prev) => {
+        //   const existingSupplier = prev.find((s) => s.id === supplierXml.id);
+        //   if (!existingSupplier) {
+        //     return [...prev, supplierXml];
+        //   }
 
-        const newProduct = new InputProduct(
-          supplierXml.id,
-          code,
-          description,
-          ncm,
-          price,
-          quantity
-        );
+        //   return prev;
+        // });
 
-        setSuppliers((prev) => {
-          const existingSupplier = prev.find((s) => s.id === supplierXml.id);
-          if (!existingSupplier) {
-            return [...prev, supplierXml];
-          }
-
-          return prev;
-        });
-
-        setProducts((prev) => [...prev, newProduct]);
+        // setProducts((prev) => [...prev, product]);
       });
     }
   }
 
-  const hasProducts = products.length > 0;
+  function selectSupplier(supplier: SupplierI) {
+    const supplierTaxIdFormatted = supplierTaxIdFormat(supplier.taxId);
+
+    form.setValue("supplier.name", supplier.name);
+    if (supplierTaxIdFormatted)
+      form.setValue("supplier.taxId", supplierTaxIdFormatted);
+    form.setValue("supplier.supplierId", supplier.id);
+    form.setValue("supplier.description", supplier.description);
+  }
+
+  async function onTaxIdBlur(event: React.FocusEvent<HTMLInputElement>) {
+    const taxId = event.currentTarget.value.replace(/\D/g, "");
+
+    const hasCpf = taxId.length === 11;
+    const hasCnpj = taxId.length === 14;
+
+    if (hasCpf || hasCnpj) {
+      const supplier = await getSupplierByTaxId({
+        companyId,
+        taxId,
+      });
+
+      if (supplier) {
+        form.setValue("supplier.name", supplier.name);
+        form.setValue("supplier.supplierId", supplier.id);
+
+        return;
+      }
+
+      if (hasCnpj) {
+        const supplier = await findSupplierByTaxId(taxId);
+
+        if (supplier?.nome) form.setValue("supplier.name", supplier.nome);
+        if (supplier?.fantasia)
+          form.setValue("supplier.description", supplier.fantasia);
+        form.setValue("supplier.supplierId", null);
+
+        return;
+      }
+    }
+  }
 
   return (
-    <form noValidate className="grid gap-4 w-full">
-      <div className="grid sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label>Selecione o CD</Label>
-          <ComboboxCellule.Root
-            trigger={
-              <ComboboxCellule.Trigger placeholder="Selecione o centro de distribuição">
-                {storageSelected && (
-                  <>
-                    {storageSelected.name}
-                    <FiX className="text-xl text-red-500" />
-                  </>
+    <>
+      <input
+        type="file"
+        accept=".xml"
+        onChange={handleFileChange}
+        ref={inputFileXmlRef}
+        className="hidden"
+      />
+
+      <HeaderOrganism title={"Entrada de produtos"}>
+        <Button
+          variant="outline"
+          type="button"
+          onClick={() => inputFileXmlRef.current?.click()}
+        >
+          Importar NF
+        </Button>
+      </HeaderOrganism>
+
+      <Form {...form}>
+        <form noValidate className="grid gap-4 w-full">
+          <div className="grid sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="storage"
+              render={({ field }) => (
+                <FormItem className="grid">
+                  <FormLabel>Selecione o CD</FormLabel>
+                  <FormControl>
+                    <ComboboxCellule.Root
+                      trigger={
+                        <ComboboxCellule.Trigger placeholder="Selecione o centro de distribuição">
+                          {field.value && (
+                            <>
+                              {field.value.name}
+                              <FiX className="text-xl text-red-500" />
+                            </>
+                          )}
+                        </ComboboxCellule.Trigger>
+                      }
+                      searchEmpty="Fornecedor não encontrado"
+                      searchPlaceholder="Pesquise pelo fornecedor"
+                      selectClean={() => field.onChange(null)}
+                    >
+                      {storagesList.map((storage) => (
+                        <ComboboxCellule.Item
+                          onSelect={() => field.onChange(storage)}
+                          selected={field.value?.id === storage.id}
+                          value={storage.name}
+                          key={storage.id}
+                        >
+                          {storage.name}
+                        </ComboboxCellule.Item>
+                      ))}
+                    </ComboboxCellule.Root>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Fornecedor</CardTitle>
+              <CardDescription>Preencha os dados do fornecedor</CardDescription>
+            </CardHeader>
+
+            <CardContent className="grid sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="supplier.taxId"
+                render={({ field: { onChange, ...field } }) => (
+                  <FormItem className="grid mb-2">
+                    <FormLabel>CNPJ / CPF</FormLabel>
+                    <FormControl>
+                      <div>
+                        <DialogSelectSupplier
+                          suppliersList={suppliersList}
+                          onSupplierSelect={(supplier) =>
+                            selectSupplier(supplier)
+                          }
+                        />
+                        <Input
+                          {...field}
+                          className="pl-8"
+                          onChange={(e) =>
+                            onChange(supplierTaxIdFormat(e.currentTarget.value))
+                          }
+                          disabled={isLoadingFindTaxId}
+                          onBlur={(event) =>
+                            startTransitionFindTaxId(async () =>
+                              onTaxIdBlur(event)
+                            )
+                          }
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </ComboboxCellule.Trigger>
-            }
-            searchEmpty="Fornecedor não encontrado"
-            searchPlaceholder="Pesquise pelo fornecedor"
-            selectClean={() => setStorageSelected(null)}
-          >
-            {storagesList.map((storage) => (
-              <ComboboxCellule.Item
-                onSelect={() => setStorageSelected(storage)}
-                selected={storageSelected?.id === storage.id}
-                value={storage.name}
-                key={storage.id}
-              >
-                {storage.name}
-              </ComboboxCellule.Item>
-            ))}
-          </ComboboxCellule.Root>
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Produtos</CardTitle>
-          <CardDescription>
-            Adicione os produtos que deseja cadastrar
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          <input
-            type="file"
-            accept=".xml"
-            onChange={handleFileChange}
-            ref={inputFileXmlRef}
-            className="hidden"
-          />
-          <div className="gap-2 flex flex-col sm:flex-row">
-            <Button variant="outline">Adicionar Produto</Button>
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => inputFileXmlRef.current?.click()}
-            >
-              Importar NF
-            </Button>
-          </div>
-
-          <Separator />
-
-          <div>
-            {hasProducts &&
-              suppliers.map((supplier) => (
-                <SupplierRow
-                  key={supplier.id}
-                  supplier={supplier}
-                  products={products.filter(
-                    (p) => p.inputSupplierId === supplier.id
-                  )}
-                />
-              ))}
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+              />
+              <FormField
+                control={form.control}
+                name="supplier.name"
+                render={({ field }) => (
+                  <FormItem className="grid mb-2">
+                    <FormLabel>Razão social</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="supplier.description"
+                render={({ field }) => (
+                  <FormItem className="grid mb-2">
+                    <FormLabel>Nome fantasia</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
+    </>
   );
 }
