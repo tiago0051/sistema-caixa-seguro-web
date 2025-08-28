@@ -5,7 +5,7 @@ import { FiX } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { InputProduct } from "./types/InputProduct";
 import { InputSupplier } from "./types/InputSupplier";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useTransition } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { getSupplierByTaxId } from "@/services/domain/supplier";
 import { getProductBySupplierCode } from "@/services/domain/product";
@@ -149,19 +149,26 @@ export default function InputProductPageClient({
 
       const supplierXml = await getSupplierFromXml(issuer);
 
+      const supplierTaxIdFormatted = supplierTaxIdFormat(supplierXml.taxId);
+
+      form.setValue("supplier.name", supplierXml.name);
+      if (supplierTaxIdFormatted)
+        form.setValue("supplier.taxId", supplierTaxIdFormatted);
+      form.setValue("supplier.supplierId", supplierXml.supplierId);
+
       products.forEach(async (productElement) => {
         const product = await getProductFromXml(productElement, supplierXml);
 
-        // setSuppliers((prev) => {
-        //   const existingSupplier = prev.find((s) => s.id === supplierXml.id);
-        //   if (!existingSupplier) {
-        //     return [...prev, supplierXml];
-        //   }
-
-        //   return prev;
-        // });
-
-        // setProducts((prev) => [...prev, product]);
+        form.setValue(`products.${product.id}`, {
+          name: product.description,
+          ncm: product.ncm,
+          costPrice: product.price,
+          salePrice: 0,
+          quantity: product.quantity,
+          productId: product.productId,
+          storageQuantity: product.storageQuantity,
+          supplierCode: product.code,
+        });
       });
     }
   }
@@ -338,6 +345,15 @@ export default function InputProductPageClient({
                 )}
               />
             </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Produtos</CardTitle>
+              <CardDescription>Adicione os produtos</CardDescription>
+            </CardHeader>
+
+            <CardContent className="grid sm:grid-cols-2 gap-4"></CardContent>
           </Card>
         </form>
       </Form>
