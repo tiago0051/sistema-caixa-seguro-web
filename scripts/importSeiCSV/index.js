@@ -71,6 +71,7 @@ async function connect() {
 
   //guardando para usar sempre o mesmo
   global.connection = pool;
+
   return pool.connect();
 }
 
@@ -151,6 +152,9 @@ async function main() {
   console.log("Criando produtos");
   await createProducts(connection, suppliers);
   console.log("Produtos criados");
+
+  await connection.end();
+  process.exit();
 }
 
 main();

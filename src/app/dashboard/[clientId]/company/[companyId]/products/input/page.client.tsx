@@ -32,6 +32,15 @@ import { Input } from "@/components/ui/input";
 import { supplierTaxIdFormat } from "@/utils/stringFormat";
 import { findSupplierByTaxId } from "./page.action";
 import { DialogSelectSupplier } from "./components/DialogSelectSupplier";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { DialogSelectProduct } from "./components/DialogSelectProduct/DialogSelectProduct";
 
 type InputProductPageClientProps = {
   storagesList: IStorage[];
@@ -159,16 +168,22 @@ export default function InputProductPageClient({
       products.forEach(async (productElement) => {
         const product = await getProductFromXml(productElement, supplierXml);
 
-        form.setValue(`products.${product.id}`, {
-          name: product.description,
-          ncm: product.ncm,
-          costPrice: product.price,
-          salePrice: 0,
-          quantity: product.quantity,
-          productId: product.productId,
-          storageQuantity: product.storageQuantity,
-          supplierCode: product.code,
-        });
+        form.setValue(
+          `products.${product.id}`,
+          {
+            name: product.description,
+            ncm: product.ncm,
+            costPrice: product.price,
+            salePrice: 0,
+            quantity: product.quantity,
+            productId: product.productId,
+            storageQuantity: product.storageQuantity,
+            supplierCode: product.code,
+          },
+          {
+            shouldDirty: true,
+          }
+        );
       });
     }
   }
@@ -353,7 +368,68 @@ export default function InputProductPageClient({
               <CardDescription>Adicione os produtos</CardDescription>
             </CardHeader>
 
-            <CardContent className="grid sm:grid-cols-2 gap-4"></CardContent>
+            <CardContent>
+              {form.getValues("products") && (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Descrição</TableHead>
+                      <TableHead>NCM</TableHead>
+                      <TableHead>Preço de custo</TableHead>
+                      <TableHead>Preço de venda</TableHead>
+                      <TableHead>Quantidade</TableHead>
+                      <TableHead>Quantidade em estoque</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {Object.entries(form.getValues("products")).map(
+                      ([key, product]) => (
+                        <TableRow key={key}>
+                          <TableCell>
+                            <DialogSelectProduct onProductSelect={() => {}} />
+                            <Input
+                              {...form.register(`products.${key}.name`)}
+                              className="pl-8"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input {...form.register(`products.${key}.ncm`)} />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              {...form.register(`products.${key}.costPrice`)}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              {...form.register(`products.${key}.salePrice`)}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              {...form.register(`products.${key}.quantity`)}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              {...form.register(
+                                `products.${key}.storageQuantity`
+                              )}
+                              readOnly
+                            />
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
           </Card>
         </form>
       </Form>

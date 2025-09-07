@@ -50,3 +50,7 @@ export function getNameInitials(text: string) {
     ? `${splittedName[0][0]}${splittedName[splittedName.length - 1][0]}`
     : `${splittedName[0][0]}`;
 }
+
+export function shortId(id: string) {
+  return id.split("-")[0].toUpperCase();
+}

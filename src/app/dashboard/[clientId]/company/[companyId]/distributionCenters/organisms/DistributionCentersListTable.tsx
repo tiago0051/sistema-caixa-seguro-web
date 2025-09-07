@@ -1,4 +1,4 @@
-import { PaginationOrganism } from "@/components/organisms/Pagination";
+import { PaginationOrganism } from "@/components/organisms/PaginationSearchParams";
 import {
   Table,
   TableBody,
