@@ -1,4 +1,3 @@
-import { PaginationOrganism } from "@/components/organisms/PaginationSearchParams";
 import {
   Table,
   TableBody,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { getProductsList } from "@/services/domain/product";
 import { DialogDetailsProduct } from "../components/DialogDetailsProduct/DialogDetailsProduct";
+import { PaginationOrganism } from "@/components/organisms/Pagination";
 
 interface ProductsListTableProps {
   params: {

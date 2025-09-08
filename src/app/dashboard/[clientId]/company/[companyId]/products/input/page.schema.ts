@@ -19,7 +19,9 @@ const SupplierSchema = z.object({
 });
 
 export const InputFormSchema = z.object({
-  storage: z.custom<IStorage>(),
+  storageId: z
+    .string({ invalid_type_error: "O ID do armazenamento é obrigatório" })
+    .uuid(),
   supplier: SupplierSchema,
   products: z.record(z.string(), ProductSchema),
 });

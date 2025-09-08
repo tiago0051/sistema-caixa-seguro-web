@@ -4,5 +4,7 @@ interface ProductI {
   name: string;
   salePrice: number;
   supplierName: string | null;
+  supplierCode: string | null;
+  ncm: string | null;
   quantity: number;
 }

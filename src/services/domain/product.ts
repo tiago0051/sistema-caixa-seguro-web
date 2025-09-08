@@ -8,6 +8,7 @@ import {
   getProductListCountDB,
   getProductsListDB,
   getProductStoragesListDB,
+  saveProductDB,
   saveProductStorageDB,
 } from "../db/product";
 
@@ -41,6 +42,10 @@ export async function createProduct({
   });
 
   return product;
+}
+
+export async function saveProduct(product: ProductI) {
+  return await saveProductDB(product);
 }
 
 interface CreateProductStorageProps {

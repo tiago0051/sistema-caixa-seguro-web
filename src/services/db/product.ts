@@ -45,6 +45,21 @@ export async function createProductDB({
   return productMap(productDB);
 }
 
+export async function saveProductDB(product: ProductI) {
+  await prisma.product.update({
+    where: {
+      id: product.id,
+    },
+    data: {
+      name: product.name,
+      ncm: product.ncm,
+      supplierCode: product.supplierCode,
+      costPrice: new Decimal(product.costPrice),
+      salePrice: new Decimal(product.salePrice),
+    },
+  });
+}
+
 interface CreateProductStorageProps {
   storageId: string;
   productId: string;
@@ -90,7 +105,7 @@ export async function getProductsListDB({
     supplierId?: string;
   };
   take?: number;
-}) {
+}): Promise<ProductI[]> {
   const productsListDB = await prisma.product.findMany({
     take,
     skip: page * take,
@@ -238,18 +253,22 @@ function productMap(productDB: {
   id: string;
   name: string;
   salePrice: Decimal;
+  supplierCode: string | null;
+  ncm: string | null;
   supplier: {
     id: string;
     name: string;
   } | null;
   productStorages: { quantity: number }[];
-}) {
+}): ProductI {
   return {
     costPrice: productDB.costPrice.toNumber(),
     id: productDB.id,
     name: productDB.name,
     salePrice: productDB.salePrice.toNumber(),
     supplierName: productDB.supplier?.name ?? null,
+    supplierCode: productDB.supplierCode ?? null,
+    ncm: productDB.ncm ?? null,
     quantity: productDB.productStorages
       .map((productStorage) => productStorage.quantity)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0),

@@ -6,6 +6,8 @@ export const ProductQuery: Prisma.ProductSelect = {
   name: true,
   salePrice: true,
   supplier: true,
+  ncm: true,
+  supplierCode: true,
   productStorages: {
     select: {
       quantity: true,

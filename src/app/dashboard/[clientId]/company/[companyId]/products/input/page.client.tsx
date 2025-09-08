@@ -1,15 +1,21 @@
 "use client";
 
 import { ComboboxCellule } from "@/components/cellules/Combobox";
-import { FiX } from "react-icons/fi";
+import { FiAlertCircle, FiX } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { InputProduct } from "./types/InputProduct";
 import { InputSupplier } from "./types/InputSupplier";
 import { useRef, useTransition } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { getSupplierByTaxId } from "@/services/domain/supplier";
-import { getProductBySupplierCode } from "@/services/domain/product";
-import { useForm } from "react-hook-form";
+import { createSupplier, getSupplierByTaxId } from "@/services/domain/supplier";
+import {
+  addProductInStorage,
+  createProduct,
+  getProduct,
+  getProductBySupplierCode,
+  saveProduct,
+} from "@/services/domain/product";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputFormSchema, InputFormValues } from "./page.schema";
 import {
@@ -186,6 +192,8 @@ export default function InputProductPageClient({
         );
       });
     }
+
+    event.target.value = "";
   }
 
   function selectSupplier(supplier: SupplierI) {
@@ -230,6 +238,78 @@ export default function InputProductPageClient({
     }
   }
 
+  function onSelectProduct(productId: string, product: ProductI) {
+    form.setValue(`products.${productId}.name`, product.name);
+    if (product.ncm) form.setValue(`products.${productId}.ncm`, product.ncm);
+    if (product.supplierCode)
+      form.setValue(`products.${productId}.supplierCode`, product.supplierCode);
+    form.setValue(`products.${productId}.salePrice`, product.salePrice);
+    form.setValue(`products.${productId}.storageQuantity`, product.quantity);
+    form.setValue(`products.${productId}.productId`, product.id, {
+      shouldDirty: true,
+    });
+  }
+
+  const onSubmit: SubmitHandler<InputFormValues> = async (data) => {
+    let supplierId = data.supplier.supplierId;
+
+    if (!supplierId) {
+      const newSupplier = await createSupplier({
+        companyId: companyId,
+        name: data.supplier.name,
+        taxId: data.supplier.taxId.replace(/\D/g, ""),
+        description: data.supplier.description,
+      });
+
+      supplierId = newSupplier.id;
+    }
+
+    const createProductPromises = Object.values(data.products).map(
+      async (product) => {
+        let productId = product.productId;
+
+        if (!productId) {
+          const newProduct = await createProduct({
+            companyId: companyId,
+            supplierId: supplierId,
+            costPrice: product.costPrice,
+            salePrice: product.salePrice,
+            name: product.name,
+            ncm: product.ncm,
+            supplierCode: product.supplierCode ?? undefined,
+          });
+
+          productId = newProduct.id;
+        } else {
+          const productExists = await getProduct(productId);
+          if (productExists) {
+            productExists.name = product.name;
+            productExists.ncm = product.ncm;
+            productExists.costPrice = product.costPrice;
+            productExists.salePrice = product.salePrice;
+
+            await saveProduct(productExists);
+          }
+        }
+
+        await addProductInStorage({
+          productId: productId!,
+          storageId: data.storageId,
+          quantity: product.quantity,
+        });
+      }
+    );
+
+    await Promise.all(createProductPromises);
+
+    toast({
+      title: "Sucesso",
+      description: "Entrada de produtos registrada com sucesso.",
+    });
+
+    form.reset();
+  };
+
   return (
     <>
       <input
@@ -251,11 +331,15 @@ export default function InputProductPageClient({
       </HeaderOrganism>
 
       <Form {...form}>
-        <form noValidate className="grid gap-4 w-full">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          noValidate
+          className="grid gap-4 w-full"
+        >
           <div className="grid sm:grid-cols-2">
             <FormField
               control={form.control}
-              name="storage"
+              name="storageId"
               render={({ field }) => (
                 <FormItem className="grid">
                   <FormLabel>Selecione o CD</FormLabel>
@@ -265,7 +349,10 @@ export default function InputProductPageClient({
                         <ComboboxCellule.Trigger placeholder="Selecione o centro de distribuição">
                           {field.value && (
                             <>
-                              {field.value.name}
+                              {
+                                storagesList.find((s) => s.id === field.value)
+                                  ?.name
+                              }
                               <FiX className="text-xl text-red-500" />
                             </>
                           )}
@@ -277,8 +364,8 @@ export default function InputProductPageClient({
                     >
                       {storagesList.map((storage) => (
                         <ComboboxCellule.Item
-                          onSelect={() => field.onChange(storage)}
-                          selected={field.value?.id === storage.id}
+                          onSelect={() => field.onChange(storage.id)}
+                          selected={field.value === storage.id}
                           value={storage.name}
                           key={storage.id}
                         >
@@ -368,9 +455,9 @@ export default function InputProductPageClient({
               <CardDescription>Adicione os produtos</CardDescription>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="overflow-scroll grid">
               {form.getValues("products") && (
-                <Table>
+                <Table className="min-w-[1200px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Descrição</TableHead>
@@ -378,50 +465,82 @@ export default function InputProductPageClient({
                       <TableHead>Preço de custo</TableHead>
                       <TableHead>Preço de venda</TableHead>
                       <TableHead>Quantidade</TableHead>
-                      <TableHead>Quantidade em estoque</TableHead>
+                      <TableHead>Estoque</TableHead>
                     </TableRow>
                   </TableHeader>
 
                   <TableBody>
                     {Object.entries(form.getValues("products")).map(
-                      ([key, product]) => (
-                        <TableRow key={key}>
-                          <TableCell>
-                            <DialogSelectProduct onProductSelect={() => {}} />
-                            <Input
-                              {...form.register(`products.${key}.name`)}
-                              className="pl-8"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Input {...form.register(`products.${key}.ncm`)} />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              {...form.register(`products.${key}.costPrice`)}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              {...form.register(`products.${key}.salePrice`)}
-                            />
+                      ([productId, product]) => (
+                        <TableRow key={productId}>
+                          <TableCell className="flex gap-2 items-center">
+                            {!product.productId && (
+                              <FiAlertCircle className="text-primary" />
+                            )}
+                            <div>
+                              <DialogSelectProduct
+                                onProductSelect={(product) =>
+                                  onSelectProduct(productId, product)
+                                }
+                                defaultSearchValue={product.name}
+                              />
+                              <Input
+                                {...form.register(`products.${productId}.name`)}
+                                className="pl-8"
+                              />
+                            </div>
                           </TableCell>
                           <TableCell>
                             <Input
-                              type="number"
-                              {...form.register(`products.${key}.quantity`)}
+                              {...form.register(`products.${productId}.ncm`)}
                             />
                           </TableCell>
                           <TableCell>
                             <Input
                               type="number"
                               {...form.register(
-                                `products.${key}.storageQuantity`
+                                `products.${productId}.costPrice`
                               )}
-                              readOnly
                             />
+                          </TableCell>
+                          <TableCell>
+                            <FormField
+                              control={form.control}
+                              name={`products.${productId}.salePrice`}
+                              render={({ field: { onChange, ...field } }) => (
+                                <FormItem className="m-0">
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      {...field}
+                                      onChange={(event) =>
+                                        onChange(event.target.valueAsNumber)
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              {...form.register(
+                                `products.${productId}.quantity`
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>{product.storageQuantity ?? 0}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant={"ghost"}
+                              onClick={() =>
+                                form.unregister(`products.${productId}`)
+                              }
+                            >
+                              <FiX />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       )
@@ -431,6 +550,10 @@ export default function InputProductPageClient({
               )}
             </CardContent>
           </Card>
+
+          <div>
+            <Button type="submit">Salvar entrada</Button>
+          </div>
         </form>
       </Form>
     </>
