@@ -44,7 +44,7 @@
     "lucide-react": "^0.453.0",
     "moment": "^2.30.1",
     "next": "^15.5.0",
-    "next-auth": "^5.0.0-beta.25",
+    "next-auth": "^5.0.0-beta.30",
     "node-gyp": "^10.1.0",
     "prisma": "^5.21.1",
     "react": "^18.3.1",
